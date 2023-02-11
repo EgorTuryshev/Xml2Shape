@@ -8,7 +8,8 @@ HEADERS += \
     geometry_attribute.h \
     io_shape.h \
     loggingcategories.h \
-    shapelib/shapefil.h
+    shapelib/shapefil.h \
+    xslt_processor.h \
 
 SOURCES += \
     appcore.cpp \
@@ -19,7 +20,9 @@ SOURCES += \
     main.cpp    \
     shapelib/safileio.c \
     shapelib/shpopen.c  \
-    shapelib/dbfopen.c
+    shapelib/dbfopen.c \
+    xslt_processor.cpp \
+
 
 resources.files = main.qml 
 resources.prefix = /$${TARGET}

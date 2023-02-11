@@ -5,6 +5,7 @@
 #include<QFile>
 #include<iostream>
 #include<QDateTime>
+#include "xslt_processor.h"
 
 QScopedPointer<QFile>   m_logFile;
 
@@ -27,6 +28,10 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
 int main(int argc, char *argv[])
 {
+    xslt_processor xslt;
+    xslt.setcwd("../Xml2Shape/samples/");
+    xslt.processXSLT("test.xml", "kpt.xsl");
+
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
