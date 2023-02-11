@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/qres">
         <file>UI_Button.qml</file>
+        <file>UI_Combo.qml</file>
+        <file>UI_DescriptionBox.qml</file>
     </qresource>
 </RCC>
