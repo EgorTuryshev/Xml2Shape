@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/qres">
+        <file>UI_Button.qml</file>
+    </qresource>
+</RCC>
