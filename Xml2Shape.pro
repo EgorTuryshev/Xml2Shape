@@ -23,7 +23,6 @@ SOURCES += \
     shapelib/dbfopen.c \
     xslt_processor.cpp \
 
-
 resources.files = main.qml 
 resources.prefix = /$${TARGET}
 RESOURCES += resources \

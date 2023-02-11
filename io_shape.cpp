@@ -10,6 +10,7 @@
 #include "LoggingCategories.h"
 #include "shapelib/shapefil.h"
 #include <geometry.h>
+#include "xslt_processor.h"
 
 using namespace std;
 
@@ -18,6 +19,10 @@ IO_Shape::IO_Shape()
 }
 void IO_Shape::WriteShape() // Тестовая функция записи shp + shx
 {
+    xslt_processor xslt;
+    xslt.setcwd("../Xml2Shape/samples/");
+    xslt.processXSLT("test.xml", "kpt.xsl");
+
     qDebug(logDebug()) << "lolkek";
     double n1[] = {50};
     double n2[] = {60};
