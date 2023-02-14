@@ -5,6 +5,7 @@ QT += \
 
 HEADERS += \
     appcore.h \
+    feature.h \
     fs_category.h \
     fs_property_manager.h \
     fs_xslt.h \
@@ -13,10 +14,13 @@ HEADERS += \
     io_shape.h \
     loggingcategories.h \
     shapelib/shapefil.h \
+    tester.h \
+    xml_parser.h \
     xslt_processor.h \
 
 SOURCES += \
     appcore.cpp \
+    feature.cpp \
     fs_category.cpp \
     fs_property_manager.cpp \
     fs_xslt.cpp \
@@ -28,6 +32,8 @@ SOURCES += \
     shapelib/safileio.c \
     shapelib/shpopen.c  \
     shapelib/dbfopen.c \
+    tester.cpp \
+    xml_parser.cpp \
     xslt_processor.cpp \
 
 resources.files = main.qml 

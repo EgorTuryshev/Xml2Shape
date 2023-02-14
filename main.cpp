@@ -2,7 +2,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QFile>
+#include "tester.h"
 #include <iostream>
 #include <QDateTime>
 #include "xslt_processor.h"
