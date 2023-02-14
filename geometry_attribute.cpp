@@ -1,6 +1,6 @@
 #include "geometry_attribute.h"
 
-Geometry_Attribute::Geometry_Attribute(int type, int field, string value)
+Geometry_Attribute::Geometry_Attribute(int type, int field, QString value)
 {
     this->_type = type;
     this->_field = field;
@@ -14,7 +14,7 @@ int Geometry_Attribute::GetField()
 {
     return this->_field;
 }
-string Geometry_Attribute::GetValue()
+QString Geometry_Attribute::GetValue()
 {
     return this->_value;
 }

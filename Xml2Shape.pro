@@ -1,9 +1,13 @@
 QT += \
     quick \
-    xml
+    xml \
+    qml
 
 HEADERS += \
     appcore.h \
+    fs_category.h \
+    fs_property_manager.h \
+    fs_xslt.h \
     geometry.h \
     geometry_attribute.h \
     io_shape.h \
@@ -13,6 +17,9 @@ HEADERS += \
 
 SOURCES += \
     appcore.cpp \
+    fs_category.cpp \
+    fs_property_manager.cpp \
+    fs_xslt.cpp \
     geometry.cpp \
     geometry_attribute.cpp \
     io_shape.cpp \

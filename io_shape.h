@@ -9,7 +9,6 @@ class IO_Shape
 public:
     IO_Shape();
     void WriteShape();
-    void ReadXml();
     static const char* typeStr(int type);
 };
 
