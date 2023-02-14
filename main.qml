@@ -2,23 +2,37 @@ import QtQuick 2.15
 import QtQuick.Controls.Material 2.15
 import QtQuick.Window 2.15
 import Qt5Compat.GraphicalEffects
+import QtQml
+import Qt.labs.settings 1.0
 import "qrc:/qres/"
 
 ApplicationWindow
 {
+    id: window
 
     Connections
     {
         target: appcore
     }
 
+    property int accent: Material.Teal
+
     width: 1000
     height: 600
     visible: true
     title: qsTr("Xml2Shape")
-
     Material.theme: Material.Light
-    Material.accent: Material.Teal
+    Material.accent: accent
+
+    Settings
+    {
+        id: settings
+            property alias x: window.x
+            property alias y: window.y
+            property alias width: window.width
+            property alias height: window.height
+            property alias accent: window.accent
+    }
 
     Item{
 
@@ -33,8 +47,6 @@ ApplicationWindow
             anchors.bottomMargin: 20
             id: border
             antialiasing: true
-            Material.background: Material.Grey
-            Material.foreground: "#ffffff"
             border.color: "black"
             border.width: 0
             radius: 40
@@ -44,8 +56,8 @@ ApplicationWindow
         {
             anchors.fill: border
             horizontalOffset: 1
-            verticalOffset: 1
-            radius: 50
+            verticalOffset: 5
+            radius: 40
             samples: 100
             color: "grey"
             spread: 0
@@ -55,10 +67,10 @@ ApplicationWindow
         UI_Button
         {
             id: writeBtn
-            anchors.top: border.top
-            anchors.left: border.left
-            anchors.leftMargin: 20
-            anchors.topMargin: 50
+            anchors.bottom: border.bottom
+            anchors.right: border.right
+            anchors.rightMargin: 20
+            anchors.bottomMargin: 50
             text: "Записать ShapeFile"
             onClicked:{
                 appcore.test();
@@ -69,8 +81,8 @@ ApplicationWindow
         {
             id: categoryCombo
             anchors.top: border.top
-            anchors.left: writeBtn.right
-            anchors.leftMargin: 5
+            anchors.left: border.left
+            anchors.leftMargin: 15
             anchors.topMargin: 50
             width: 200
             model: ["Категория не выбрана", "1", "2"]
@@ -86,15 +98,6 @@ ApplicationWindow
             width: 200
         }
 
-        Label
-        {
-            id: categoryHeader
-            anchors.top: categoryCombo.bottom
-            anchors.left: categoryCombo.left
-            anchors.topMargin: 25
-            text: "Описание категории"
-        }
-
         /*Label
         {
             anchors.top: categoryHeader.bottom
@@ -107,9 +110,11 @@ ApplicationWindow
 
         UI_DescriptionBox
         {
-            anchors.top: categoryHeader.bottom
-            anchors.left: categoryHeader.left
-            anchors.topMargin: 5
+            anchors.top: categoryCombo.bottom
+            anchors.left: categoryCombo.left
+            anchors.topMargin: 25
+            headertext: "Недлинный ёмкий текст"
+            text: "Тут может быть любой осмысленный текст с длиной слова в разумных пределах. Конечно, любой желаемый текст сюда не поместится, однако можно очень хорошо описать категорию. А, чуть не забыл, поддерживаются все стандартные <b>html - тэги</b>. <h3>Можно даже заголовками писать</h3> Ну или <p>Сменить абзац</p><i><font color=\"red\"> Не забудьте покреативить со свойствами тэгов</font></i>"
         }
 
         ProgressBar
@@ -136,7 +141,7 @@ ApplicationWindow
     MenuBar
     {
 
-        Material.background: Material.Teal
+        Material.background: Material.accentColor
         Material.foreground: "#ffffff"
         font.pixelSize: 14
 
@@ -146,21 +151,70 @@ ApplicationWindow
 
             MenuBarItem
             {
+
+                property var accents: [Material.Teal, Material.Purple, Material.Indigo, Material.Cyan, Material.DeepOrange];
+                property int i: 0;
+                text: "Сменить тему"
+                onClicked:
+                {
+                    if(i < accents.length - 1)
+                    {
+                       i++;
+                    }
+                    else
+                    {
+                        i = 0;
+                    }
+                    window.accent = accents[i];
+                }
+            }
+            MenuBarItem
+            {
                 text: "Закрыть"
                 onClicked: {
-                    window:close();
+                    window.close();
                 }
+            }
+        }
+        Menu
+        {
+            title: "Лог"
+
+            MenuBarItem
+            {
+                text: "Открыть лог"
+                onClicked: {
+                    appcore.openLog();
+                }
+            }
+            MenuBarItem
+            {
+                text: "Очистить лог"
+                onClicked: {
+                    appcore.clearLog();
+                }
+            }
+            CheckBox
+            {
+                text: "Автоочитска лога"
+                checked: true
             }
         }
         Menu
         {
             title: "Опции"
 
-            MenuBarItem{
-                text: "Структура XML"
+            MenuBarItem
+            {
+                text: "Обновить категории"
             }
-            MenuBarItem{
-                text: "Отображение ShapeFile"
+            MenuBarItem
+            {
+                text: "Исправить разметку"
+            }
+            CheckBox
+            {
+                text: "Инвертировать X и Y"
             }
         }
     }

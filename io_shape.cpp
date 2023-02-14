@@ -8,9 +8,14 @@
 #include <QDebug>
 #include <QtXml>
 #include "LoggingCategories.h"
+#include "fs_category.h"
 #include "shapelib/shapefil.h"
 #include <geometry.h>
 #include "xslt_processor.h"
+#include <QDirIterator>
+#include <QFileInfo>
+#include <QString>
+#include <fs_property_manager.h>
 
 using namespace std;
 
@@ -19,59 +24,80 @@ IO_Shape::IO_Shape()
 }
 void IO_Shape::WriteShape() // Тестовая функция записи shp + shx
 {
-    xslt_processor xslt;
+    /*xslt_processor xslt;
     xslt.setcwd("../Xml2Shape/samples/");
     xslt.processXSLT("test.xml", "kpt.xsl");
 
-    qDebug(logDebug()) << "lolkek";
     double n1[] = {50};
     double n2[] = {60};
     double n3[] = {0};
     SHPHandle shp = SHPCreate("123", SHPT_POINT);
     SHPWriteObject(shp, -1, SHPCreateSimpleObject(SHPT_POINT, 1, n1, n2, n3));
-    SHPClose(shp);
-    //SHPCreateObject()
-}
+    SHPClose(shp);*/
 
-void IO_Shape::ReadXml()
-{
-    QDomDocument TargetXML;
+    //qDebug(logDebug()) << fs_property_manager::GetPropertyValue("./templates/dir/Текстовый документ.txt", "Description");
+    //qDebug(logDebug()) << fs_property_manager::GetFileName("./templates/dir/Текстовый документ.txt");
+    //return;
 
-    QFile xmlFile("Sample.xml");
-    if (!xmlFile.open(QIODevice::ReadOnly ))
+    QString  lastdir = ".";
+    QString itdir = ".";
+    QVector <QString> files;
+    QVector <fs_category> categories;
+    QVector <fs_xslt> category_xslts;
+    QDirIterator it(QDir::currentPath() + "/templates", QDir::Files, QDirIterator::Subdirectories);
+    qDebug(logDebug()) << it.hasNext();
+
+    if (it.hasNext())
     {
-        qWarning(logWarning()) << "Xml не может быть считан";
+            it.next();
+            itdir = QFileInfo(it.filePath()).dir().dirName();
+            lastdir = itdir;
     }
 
-    TargetXML.setContent(&xmlFile);
-    xmlFile.close();
-
-    QDomElement root = TargetXML.documentElement();
-    QDomElement node = root.firstChild().toElement();
-
-    QString uiData = "";
-
-    //Сначала нужно будет определить тип элемента Geometry
-
-    while(node.isNull() == false)
+        while (it.hasNext())
         {
-            qDebug(logDebug()) << node.tagName();
-            if(node.tagName() == "feature"){ //+ нужна проверка на дырки
-                while(!node.isNull()){
+            if (itdir != lastdir)
+            {
+                qDebug(logDebug()) << "ВХОД В ПАРСЕР";
+                for(int i = 0; i < files.count(); i++){
+                    if(fs_property_manager::GetFileName(files[i]) != "root.desc")
+                    {
+                        qDebug(logDebug()) << "ВХОД В ФАЙЛЫ";
+                        QString name = fs_property_manager::GetPropertyValue(files[i], "Name");
+                        qDebug(logDebug()) << "ЕСТЬ ИМЯ" << name;
+                        QString description = fs_property_manager::GetPropertyValue(files[i], "Description");
+                        qDebug(logDebug()) << "ЕСТЬ ОПИСАНИЕ";
+                        category_xslts.push_back(fs_xslt(name, fs_property_manager::GetFileName(files[i]), description));
+                        qDebug(logDebug()) << "ЕСТЬ КАТЕГОРИЯ";
+                    }
+                    else
+                    {
+                        qDebug(logDebug()) << "ВХОД В КАТЕГОРИИ";
+                        QString name = fs_property_manager::GetPropertyValue(files[i], "Name");
+                        categories.push_back(fs_category(name, files[i]));
+                        //Действия при категории
+                    }
 
-                    QString id = node.attribute("id","0");  //Атрибуты в XML называются иначе, надо будет менять
-                    QString name = node.attribute("name","name");
-                    QString number = node.attribute("number","number");
-
-                    uiData.append(id).append(" - ").append(name).append(" - ").append(number).append("\n");
-
-                    node = node.nextSibling().toElement();
                 }
+                categories.last().SetXslts(category_xslts);
+                categories.last().Debug_DisplayCategory();
+                qDebug(logDebug()) << "dirChanged";
+                lastdir = itdir;
+                files.clear();
             }
-            node = node.nextSibling().toElement();
-        }
-    //Это очень простой пример парсинга, надо углябляться
+            else
+            {
+                qDebug(logDebug()) << "БЫЛ ПУШ" << itdir;
+                files.push_back(it.filePath());
+                qDebug(logDebug()) << files.last();
+            }
 
+            qDebug(logDebug()) << "ИМЯ ПАПКИ" << itdir;
+            qDebug(logDebug()) << "ИМЯ ФАЙЛА" << it.fileName();
+            it.next();
+            itdir = QFileInfo(it.filePath()).dir().dirName();
+        }
+        categories.last().Debug_DisplayCategory();
 }
 
 const char* IO_Shape::typeStr(int def){ //Только заготовка под определение GeometryType из XML, надо будет менять
