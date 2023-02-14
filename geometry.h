@@ -23,19 +23,23 @@ public:
     /*Поля должны быть предварительно созданы*/
     void WriteToDBF(DBFHandle dbf);
     /*Добавить свойство объекта*/
-    void AddAttribute(int type, QString value);
+    void AddAttribute(int type, int field, QString value);
     /*Начать запись части (дырки) объекта со следующих координат.*/
     /*Все координаты после вызова метода будут считаться частью SHPP_RING записываемого объекта*/
     void StartHole();
     /*Закончить запись части*/
     void EndHole();
+
+    void SetSHPtype(int SHPtype)
+    {
+        this->SHPtype = SHPtype;
+    }
 private:
     static int SHPId;
     int currentId;
     int SHPtype;
-    int nParts = 0;
+    int nParts = 1;
     int nVerts = 0;
-    int lastAttrId = 0;
     QVector<double> Xs;
     QVector<double> Ys;
     QVector<int> IteratorsOfVerts {0};

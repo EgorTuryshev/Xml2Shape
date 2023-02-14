@@ -24,6 +24,34 @@ IO_Shape::IO_Shape()
 }
 void IO_Shape::WriteShape() // Тестовая функция записи shp + shx
 {
+    Geometry polygon;
+    polygon.PointPush(75, 67);
+    polygon.PointPush(92, 68);
+    polygon.PointPush(89, 57);
+    polygon.PointPush(72, 57);
+    polygon.PointPush(75, 67);
+
+    polygon.StartHole();
+    polygon.PointPush(81, 63);
+    polygon.PointPush(84, 63);
+    polygon.PointPush(84, 61);
+    polygon.PointPush(81, 62);
+    polygon.PointPush(81, 63);
+    polygon.EndHole();
+    polygon.SetSHPtype(SHPT_POLYGON);
+
+    DBFHandle dbf = DBFCreate("test");
+    DBFAddField(dbf, "attr", FTString, 10, 0);
+    polygon.AddAttribute(FTString, 0, "smth");
+    //qDebug(logDebug()) << DBFWriteStringAttribute(dbf, 0, 0, "smth");
+    SHPHandle shp = SHPCreate("test", SHPT_POLYGON);
+
+    polygon.WriteToSHP(shp);
+    polygon.WriteToDBF(dbf);
+    qDebug(logDebug()) << DBFGetRecordCount(dbf);
+    SHPClose(shp);
+    DBFClose(dbf);
+
     /*xslt_processor xslt;
     xslt.setcwd("../Xml2Shape/samples/");
     xslt.processXSLT("test.xml", "kpt.xsl");
@@ -39,7 +67,7 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
     //qDebug(logDebug()) << fs_property_manager::GetFileName("./templates/dir/Текстовый документ.txt");
     //return;
 
-    QString  lastdir = ".";
+    /*QString  lastdir = ".";
     QString itdir = ".";
     QVector <QString> files;
     QVector <fs_category> categories;
@@ -97,7 +125,7 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
             it.next();
             itdir = QFileInfo(it.filePath()).dir().dirName();
         }
-        categories.last().Debug_DisplayCategory();
+        categories.last().Debug_DisplayCategory();*/
 }
 
 const char* IO_Shape::typeStr(int def){ //Только заготовка под определение GeometryType из XML, надо будет менять
