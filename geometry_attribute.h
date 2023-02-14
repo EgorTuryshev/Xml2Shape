@@ -2,21 +2,19 @@
 #define GEOMETRY_ATTRIBUTE_H
 
 #include "shapelib/shapefil.h"
-#include <string>
-
-using namespace std;
+#include <QString>
 
 class Geometry_Attribute
 {
 public:
-    Geometry_Attribute(int type, int field, string value);
+    Geometry_Attribute(int type, int field, QString value);
     int GetType();
     int GetField();
-    string GetValue();
+    QString GetValue();
 private:
     int _type;
     int _field;
-    string _value;
+    QString _value;
 };
 
 #endif // GEOMETRY_ATTRIBUTE_H

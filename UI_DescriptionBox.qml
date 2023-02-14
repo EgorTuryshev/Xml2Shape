@@ -1,19 +1,20 @@
 import QtQuick 2.15
 import QtQuick.Controls.Material 2.15
 
-Rectangle {
-    id: border
+Item{
+    id: root
     property string text
-
-    Material.background: Material.Teal
-    Material.foreground: "#ffffff"
-
-    border.color: Material.Teal
+    property string headertext
+    headertext: "Описание категории"
+    text: "Категория не выбрана, но текст здесь может быть очень длинным"
+Rectangle
+{
+    id: border
+    antialiasing: true
     border.width: 0.5
     radius: 5
-
-    text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat"
-    //text: "a short string"
+    border.color: "grey"
+    opacity: 0.7
 
     Text {
         id: text_field
@@ -22,33 +23,28 @@ Rectangle {
         anchors.topMargin: 5
         anchors.leftMargin: 5
         font.pixelSize: 14
-
         height: parent.height
         width: parent.width
-        text: parent.text
+        text: root.text
         wrapMode: Text.WordWrap
 
     }
 
-    Text {
-        id: dummy_text
-        text: parent.text
-        visible: false
-    }
-
     states: [
-            State {
+            State
+        {
                 name: "wide text"
-                when: border.text.length > 20
+                when: root.text.length > 20
                 PropertyChanges {
                     target: border
                     width: 200
                     height: text_field.paintedHeight + 5
                 }
             },
-            State {
+            State
+        {
                 name: "not wide text"
-                when: border.text.length <= 20
+                when: root.text.length <= 10
                 PropertyChanges {
                     target: border
                     width: 200
@@ -57,4 +53,36 @@ Rectangle {
                 }
             }
         ]
+}
+
+Rectangle
+{
+   color: "white"
+   id: header
+   radius: 5
+   antialiasing: true
+   anchors.bottom: border.top
+   anchors.left: border.left
+   anchors.leftMargin: 5
+   anchors.bottomMargin: -5
+   height: 10
+   width: headertext.length * 9
+   opacity: 1
+
+   Text
+   {
+       id: header_text_field
+       anchors.top: parent.top
+       anchors.left: parent.left
+       anchors.topMargin: -8
+       anchors.leftMargin: 5
+       font.pixelSize: 14
+       font.bold: true
+       opacity: 0.6
+       height: parent.height
+       width: parent.width
+       text: root.headertext
+       wrapMode: Text.WordWrap
+   }
+}
 }

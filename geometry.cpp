@@ -28,7 +28,7 @@ void Geometry::PointPush(double x, double y)
     YPush(y);
     nVerts++;
 }
-void Geometry::AddAttribute(int type, string value)
+void Geometry::AddAttribute(int type, QString value)
 {
     GATS.push_back(Geometry_Attribute (this->lastAttrId, type, value));
     ++this->lastAttrId;
@@ -55,9 +55,9 @@ void Geometry::WriteToDBF(DBFHandle dbf)
         Geometry_Attribute currentGAT = GATS[i];
         switch(currentGAT.GetType())
         {
-            case FTString: DBFWriteStringAttribute(dbf, currentId, currentGAT.GetField(), &currentGAT.GetValue()[0] );
-            case FTDouble: DBFWriteDoubleAttribute(dbf, currentId, currentGAT.GetField(), stod(currentGAT.GetValue()) );
-            case FTInteger: DBFWriteIntegerAttribute(dbf, currentId, currentGAT.GetField(), stoi(currentGAT.GetValue()) );
+            case FTString: DBFWriteStringAttribute(dbf, currentId, currentGAT.GetField(), &currentGAT.GetValue().toStdString()[0] );
+            case FTDouble: DBFWriteDoubleAttribute(dbf, currentId, currentGAT.GetField(), currentGAT.GetValue().toDouble() );
+            case FTInteger: DBFWriteIntegerAttribute(dbf, currentId, currentGAT.GetField(), currentGAT.GetValue().toInt() );
             default: qCritical(logCritical()) << "Тип поля не распознан";
         }
     }
