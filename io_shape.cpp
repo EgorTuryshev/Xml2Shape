@@ -7,7 +7,6 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QtXml>
-#include "LoggingCategories.h"
 #include "shapelib/shapefil.h"
 #include <geometry.h>
 #include "xslt_processor.h"
@@ -31,47 +30,6 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
     SHPWriteObject(shp, -1, SHPCreateSimpleObject(SHPT_POINT, 1, n1, n2, n3));
     SHPClose(shp);
     //SHPCreateObject()
-}
-
-void IO_Shape::ReadXml()
-{
-    QDomDocument TargetXML;
-
-    QFile xmlFile("Sample.xml");
-    if (!xmlFile.open(QIODevice::ReadOnly ))
-    {
-        qWarning(logWarning()) << "Xml не может быть считан";
-    }
-
-    TargetXML.setContent(&xmlFile);
-    xmlFile.close();
-
-    QDomElement root = TargetXML.documentElement();
-    QDomElement node = root.firstChild().toElement();
-
-    QString uiData = "";
-
-    //Сначала нужно будет определить тип элемента Geometry
-
-    while(node.isNull() == false)
-        {
-            qDebug(logDebug()) << node.tagName();
-            if(node.tagName() == "feature"){ //+ нужна проверка на дырки
-                while(!node.isNull()){
-
-                    QString id = node.attribute("id","0");  //Атрибуты в XML называются иначе, надо будет менять
-                    QString name = node.attribute("name","name");
-                    QString number = node.attribute("number","number");
-
-                    uiData.append(id).append(" - ").append(name).append(" - ").append(number).append("\n");
-
-                    node = node.nextSibling().toElement();
-                }
-            }
-            node = node.nextSibling().toElement();
-        }
-    //Это очень простой пример парсинга, надо углябляться
-
 }
 
 const char* IO_Shape::typeStr(int def){ //Только заготовка под определение GeometryType из XML, надо будет менять

@@ -4,15 +4,19 @@ QT += \
 
 HEADERS += \
     appcore.h \
+    feature.h \
     geometry.h \
     geometry_attribute.h \
     io_shape.h \
     loggingcategories.h \
     shapelib/shapefil.h \
+    tester.h \
+    xml_parser.h \
     xslt_processor.h \
 
 SOURCES += \
     appcore.cpp \
+    feature.cpp \
     geometry.cpp \
     geometry_attribute.cpp \
     io_shape.cpp \
@@ -21,6 +25,8 @@ SOURCES += \
     shapelib/safileio.c \
     shapelib/shpopen.c  \
     shapelib/dbfopen.c \
+    tester.cpp \
+    xml_parser.cpp \
     xslt_processor.cpp \
 
 resources.files = main.qml 

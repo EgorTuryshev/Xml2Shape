@@ -5,7 +5,7 @@
 #include<QFile>
 #include<iostream>
 #include<QDateTime>
-#include "xslt_processor.h"
+#include "tester.h"
 
 QScopedPointer<QFile>   m_logFile;
 
