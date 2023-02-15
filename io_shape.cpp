@@ -142,6 +142,85 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
         categories.last().Debug_DisplayCategory();*/
 }
 
+void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features)
+{
+    Geometry::SetShapeFile("test_shape");
+    short int type = 0;
+
+    if (featureType == "MultiPolygon") // Добавить другие типы
+    {
+        type = SHPT_POLYGON;
+    }
+
+    for (int i = 0; i < features.count(); i++) // Не учитывает несколько Shell
+    {
+        Feature currFeature = features.at(i);
+        Geometry polygon(type);
+        QVector<Shell> shells = currFeature.getShells();
+        for (int j = 0; j < 1; j++) // Не забыть заменить 1 на shells.count()
+        {
+            if (shells.count() == 0) // Потом убрать
+            {
+                break;
+            }
+
+            Shell currShell = shells.at(j);
+            GeometryObject coordinates = currShell.getCoordinates();
+            for (int k = 0; k < coordinates.count(); k++)
+            {
+                Coordinate currCoordinate = coordinates.at(k);
+                polygon.PointPush(currCoordinate.getX(), currCoordinate.getY());
+            }
+            QVector<GeometryObject> holes = currShell.getHoles();
+            for (int k = 0; k < 1; k++) // // Не забыть заменить 1 на holes.count()
+            {
+                if (holes.count() == 0) // Потом убрать
+                {
+                    break;
+                }
+
+                GeometryObject currHole = holes.at(k);
+                polygon.StartSubpart();
+
+                for (int l = 0; l < currHole.count(); l++)
+                {
+                    Coordinate currHoleCoordinate = currHole.at(l);
+                    polygon.PointPush(currHoleCoordinate.getX(), currHoleCoordinate.getY());
+                }
+            }
+        }
+
+        QVector<Attribute> attributes = currFeature.getAttributes();
+        for (int j = 0; j < attributes.count(); j++)
+        {
+            Attribute currAttribute = attributes.at(j);
+            QString type;
+
+            for (int k = 0; k < header.count(); k++)
+            {
+                QPair<QString, QString> currPair = header.at(k);
+                if (currPair.first == currAttribute.getName())
+                {
+                    type = currPair.second;
+                }
+            }
+
+            if (type == "String")
+            {
+                polygon.AddAttribute(FTString, currAttribute.getName(), currAttribute.getValue());
+            }
+            else if (type == "Number") // Тут double или int?
+            {
+                polygon.AddAttribute(FTDouble, currAttribute.getName(), currAttribute.getValue());
+            }
+        }
+
+        polygon.WriteToShapeFile();
+    }
+
+    Geometry::SaveShapeFile();
+}
+
 const char* IO_Shape::typeStr(int def){ //Только заготовка под определение GeometryType из XML, надо будет менять
     switch (def){
     case SHPT_NULL:

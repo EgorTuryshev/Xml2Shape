@@ -4,6 +4,40 @@
 #include <QString>
 #include <QVector>
 
+struct Attribute
+{
+private:
+    QString name;
+    QString value;
+public:
+    Attribute(QString name, QString value)
+    {
+        this->name = name;
+        this->value = value;
+    }
+    Attribute()
+    {
+        this->name = "";
+        this->value = "";
+    }
+    void setName(QString name)
+    {
+        this->name = name;
+    }
+    void setValue(QString value)
+    {
+        this->value = value;
+    }
+    QString getName()
+    {
+        return this->name;
+    }
+    QString getValue()
+    {
+        return this->value;
+    }
+};
+
 struct Coordinate
 {
 private:
@@ -55,55 +89,35 @@ public:
     }
 };
 
-struct Attribute
+using GeometryObject = QVector<Coordinate>;
+
+struct Shell
 {
 private:
-    QString name;
-    QString value;
+    GeometryObject coordinates;
+    QVector<GeometryObject> holes;
 public:
-    Attribute(QString name, QString value)
-    {
-        this->name = name;
-        this->value = value;
-    }
-    Attribute()
-    {
-        this->name = "";
-        this->value = "";
-    }
-    void setName(QString name)
-    {
-        this->name = name;
-    }
-    void setValue(QString value)
-    {
-        this->value = value;
-    }
-    QString getName()
-    {
-        return this->name;
-    }
-    QString getValue()
-    {
-        return this->value;
-    }
+    Shell() { this->coordinates = GeometryObject(); this->holes = QVector<GeometryObject>(); };
+    Shell(GeometryObject coordinates, QVector<GeometryObject> holes) { this->coordinates = coordinates; this->holes = holes; };
+    void setCoordinates(GeometryObject coordinates) { this->coordinates = coordinates; };
+    GeometryObject getCoordinates() { return this->coordinates; }
+    void setHoles(QVector<GeometryObject> holes) { this->holes = holes; };
+    QVector<GeometryObject> getHoles() { return this->holes; }
 };
-
-using Shells = QVector< QVector<Coordinate> >;
 
 class Feature
 {
 private:
     QVector<Attribute> attributes;
-    Shells shells;
+    QVector<Shell> shells;
 public:
-    Feature(QVector<Attribute> attributes, Shells shells);
+    Feature(QVector<Attribute> attributes, QVector<Shell> shells);
     Feature();
 
     void setAttributes(QVector<Attribute> attributes) { this->attributes = attributes; }
-    void setShells(Shells shells) { this->shells = shells; }
+    void setShells(QVector<Shell> shells) { this->shells = shells; }
     QVector<Attribute> getAttributes() { return this->attributes; }
-    Shells getShells() { return this->shells; }
+    QVector<Shell> getShells() { return this->shells; }
 };
 
 #endif // FEATURE_H

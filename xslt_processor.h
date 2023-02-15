@@ -6,11 +6,12 @@
 class xslt_processor
 {
 private:
-    QString cwd; // current working directory
-public:
+    static QString cwd; // current working directory
+
     xslt_processor();
-    QString processXSLT(QString xmlPath, QString xsltPath);
-    void setcwd(QString path);
+public:
+    static QString processXSLT(QString xmlPath, QString xsltPath);
+    static void setcwd(QString path);
 };
 
 #endif // XSLT_PROCESSOR_H

@@ -11,7 +11,6 @@ private:
 public:;
     static void testReadingHeaders(QString filePath);
     static void testReadingFeatureType(QString filePath);
-    static void testReadingAttributes(QString filePath);
     static void testReadingDirectories();
     static void testReadingFeatures(QString filePath);
 };
