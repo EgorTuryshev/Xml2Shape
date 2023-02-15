@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include<qvector.h>
+#include <qvector.h>
 #include "shapelib/shapefil.h"
 #include <geometry_attribute.h>
 #include <loggingcategories.h>
@@ -14,30 +14,32 @@ public:
     /*ВАЖНО!*/
     /*Запись объекта происходит итеративно,*/
     /*изменение уже записанных полей не предполагается*/
-    Geometry();
+    Geometry(int SHPtype);
+    /*Создает ShapeFile для ВСЕХ последующих объектов Geometry.*/
+    /*Задается перед первым вызовом конструктора*/
+    static void SetShapeFile(const char* path);
+    /*Сохранение файла в файловой системе*/
+    static void SaveShapeFile();
     /*Добавить новую точку (координату) в объект*/
     void PointPush(double x, double y);
-    /*Записать весь объект в SHPHandle*/
-    void WriteToSHP(SHPHandle shp);
-    /*Записать весь объект в DBFHandle*/
-    /*Поля должны быть предварительно созданы*/
-    void WriteToDBF(DBFHandle dbf);
     /*Добавить свойство объекта*/
-    void AddAttribute(int type, int field, QString value);
+    void AddAttribute(DBFFieldType type, QString field, QString value);
     /*Начать запись части (дырки) объекта со следующих координат.*/
     /*Все координаты после вызова метода будут считаться частью SHPP_RING записываемого объекта*/
-    void StartHole();
-    /*Закончить запись части*/
-    void EndHole();
-
-    void SetSHPtype(int SHPtype)
-    {
-        this->SHPtype = SHPtype;
-    }
+    void StartSubpart();
+    /*Записать объект в ShapeFile, заданный с помощью SetShapeFile()*/
+    void WriteToShapeFile();
 private:
+    static SHPHandle shp;
+    static DBFHandle dbf;
     static int SHPId;
+    static int SHPtype;
+    static const char* SHPpath;
+    static QVector<QString> DBFFields;
+
+    static void ResetShapeFile();
+
     int currentId;
-    int SHPtype;
     int nParts = 1;
     int nVerts = 0;
     QVector<double> Xs;
@@ -49,5 +51,7 @@ private:
     void YPush(double y);
     QVector<double> GetXs();
     QVector<double> GetYs();
+    void WriteToSHP(SHPHandle shp);
+    void WriteToDBF(DBFHandle dbf);
 };
 #endif // GEOMETRY_H

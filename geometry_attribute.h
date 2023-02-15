@@ -7,12 +7,12 @@
 class Geometry_Attribute
 {
 public:
-    Geometry_Attribute(int type, int field, QString value);
-    int GetType();
+    Geometry_Attribute(DBFFieldType type, int field, QString value);
+    DBFFieldType GetType();
     int GetField();
     QString GetValue();
 private:
-    int _type;
+    DBFFieldType _type;
     int _field;
     QString _value;
 };

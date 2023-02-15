@@ -7,11 +7,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QtXml>
-#include "LoggingCategories.h"
-#include "fs_category.h"
-#include "shapelib/shapefil.h"
 #include <geometry.h>
-#include "xslt_processor.h"
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QString>
@@ -24,33 +20,51 @@ IO_Shape::IO_Shape()
 }
 void IO_Shape::WriteShape() // Тестовая функция записи shp + shx
 {
-    Geometry polygon;
+    //теперь НИКАК не взаимодействуем с библиотекой напрямую (кроме типов атрибутов)
+    //теперь просто называем SHAPEFILE и не создаем его с типом
+    Geometry::SetShapeFile("nice_implementation");
+    //в конструкторе теперь необходим тип объекта
+    Geometry polygon(SHPT_POLYGON);
+
     polygon.PointPush(75, 67);
     polygon.PointPush(92, 68);
     polygon.PointPush(89, 57);
     polygon.PointPush(72, 57);
     polygon.PointPush(75, 67);
 
-    polygon.StartHole();
+    //просто изменение синтаксиса
+    polygon.StartSubpart();
     polygon.PointPush(81, 63);
     polygon.PointPush(84, 63);
     polygon.PointPush(84, 61);
     polygon.PointPush(81, 62);
     polygon.PointPush(81, 63);
-    polygon.EndHole();
-    polygon.SetSHPtype(SHPT_POLYGON);
+    //теперь не пишем EndHole()
 
-    DBFHandle dbf = DBFCreate("test");
-    DBFAddField(dbf, "attr", FTString, 10, 0);
-    polygon.AddAttribute(FTString, 0, "smth");
-    //qDebug(logDebug()) << DBFWriteStringAttribute(dbf, 0, 0, "smth");
-    SHPHandle shp = SHPCreate("test", SHPT_POLYGON);
+    //теперь не создаем поля таблицы, а сразу присваиваем атрибуты
+    polygon.AddAttribute(FTString, "header", "some_val");
+    polygon.AddAttribute(FTString, "second", "another_val");
+    polygon.AddAttribute(FTDouble, "double", "4567825.523");
+    polygon.AddAttribute(FTInteger, "int", "696969");
 
-    polygon.WriteToSHP(shp);
-    polygon.WriteToDBF(dbf);
-    qDebug(logDebug()) << DBFGetRecordCount(dbf);
-    SHPClose(shp);
-    DBFClose(dbf);
+    //записываем фигуру сразу в весь формат SHP + DBF + SHX (в оперативную память)
+    polygon.WriteToShapeFile();
+
+    //
+    Geometry new_polygon(SHPT_POLYGON);
+
+    new_polygon.PointPush(65, 75);
+    new_polygon.PointPush(97, 72);
+    new_polygon.PointPush(100, 47);
+    new_polygon.PointPush(63, 52);
+    new_polygon.PointPush(65, 75);
+
+    new_polygon.AddAttribute(FTString, "header", "i_am_new");
+
+    new_polygon.WriteToShapeFile();
+
+    //перенос всего записанного выше в файл
+    Geometry::SaveShapeFile();
 
     /*xslt_processor xslt;
     xslt.setcwd("../Xml2Shape/samples/");
