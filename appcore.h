@@ -1,9 +1,10 @@
 #ifndef APPCORE_H
 #define APPCORE_H
 
-#include <QObject>
 #include "io_shape.h"
 #include "loggingcategories.h"
+#include "xslt_processor.h"
+#include <QObject>
 #include <QProcess>
 #include <QQmlContext>
 #include <QQmlProperty>

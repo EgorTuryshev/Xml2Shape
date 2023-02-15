@@ -48,6 +48,13 @@ void xml_parser::setPath(QString path) {
     xmlFile.close();
 }
 
+void xml_parser::setXML(const QString xml_str)
+{
+    QDomDocument xmlDocument;
+    xmlDocument.setContent(xml_str);
+    xml_parser::root = xmlDocument.documentElement();
+}
+
 QString xml_parser::readFeatureType()
 {
     QDomElement featureTypeEl = xml_parser::getFirstDomElByName("FeatureType", xml_parser::root);
@@ -72,42 +79,12 @@ xml_header xml_parser::readTypeHeader()
     return header;
 }
 
-features_attributes xml_parser::readAttributes()
-{
-    features_attributes attributes;
-
-    QDomElement featuresEl = xml_parser::root.firstChildElement("Features");
-    QDomNodeList features = featuresEl.elementsByTagName("Feature");
-
-    for (int i = 0; i < features.count(); i++) { // count()?
-        QDomElement currFeature = features.at(i).toElement();
-        QDomElement currAttrsEl = currFeature.firstChildElement("Attributes");
-        QDomNodeList currAttrs = currAttrsEl.elementsByTagName("Attribute");
-        QVector<QString> currAttrsVect;
-
-        for (int j = 0; j < currAttrs.count(); j++) {
-            QDomElement currAttr = currAttrs.at(j).toElement();
-            currAttrsVect.push_back(currAttr.text());
-        }
-        attributes.push_back(currAttrsVect);
-    }
-
-    return attributes;
-}
-
-Shells xml_parser::readCoordinates()
-{
-    Shells coordinates;
-
-    return coordinates;
-}
-
 QVector<Feature> xml_parser::readFeautures()
 {
     QVector<Feature> features;
 
     QDomNodeList featuresEls = xml_parser::root.firstChildElement("Features").elementsByTagName("Feature");
-    for (int i = 0; i < featuresEls.count(); i++) { // count()?
+    for (int i = 0; i < featuresEls.count(); i++) {
         QDomElement currFeature = featuresEls.at(i).toElement();
         QDomElement currAttrsEl = currFeature.firstChildElement("Attributes");
         QDomNodeList currAttrs = currAttrsEl.elementsByTagName("Attribute");
@@ -121,24 +98,46 @@ QVector<Feature> xml_parser::readFeautures()
 
         QDomElement currFeatureGeometryEl = currFeature.firstChildElement("Geometry");
         QDomNodeList shellsDom = currFeatureGeometryEl.elementsByTagName("Shell");
-        Shells currShellsVect;
+        QVector<Shell> currShellsVect;
 
         for (int j = 0; j < shellsDom.count(); j++)
         {
             QDomElement currShellEl = shellsDom.at(j).toElement();
-            QDomNodeList currShellCoordsDom = currShellEl.elementsByTagName("Coordinate");
-            QVector<Coordinate> currShellCoordsVect;
 
-            for (int k = 0; k < currShellCoordsDom.count(); k++)
+            QDomNodeList coordsDom = currShellEl.elementsByTagName("Coordinate");
+            GeometryObject coordinates;
+            for (int k = 0; k < coordsDom.count(); k++)
             {
-                QDomElement currShellCoordEl = currShellCoordsDom.at(k).toElement();
-                double x = currShellCoordEl.attribute("x").toDouble();
-                double y = currShellCoordEl.attribute("y").toDouble();
-                unsigned int ord_number = currShellCoordEl.attribute("ord_number").toUInt();
-                Coordinate currCoord(x, y, ord_number);
-                currShellCoordsVect.push_back(currCoord);
+                QDomElement currCoordEl = coordsDom.at(k).toElement();
+                double x = currCoordEl.attribute("x").toDouble();
+                double y = currCoordEl.attribute("y").toDouble();
+                unsigned int ord_number = currCoordEl.attribute("ord_number").toUInt();
+                Coordinate currCoordinate(x, y, ord_number);
+                coordinates.push_back(currCoordinate);
             }
-            currShellsVect.push_back(currShellCoordsVect);
+
+            QDomElement holesEl = currShellEl.firstChildElement("Holes");
+            QDomNodeList holesDom = holesEl.elementsByTagName("Hole");
+            QVector<GeometryObject> holes;
+            for (int k = 0; k < holesDom.count(); k++)
+            {
+                QDomElement currHoleEl = holesDom.at(k).toElement();
+                QDomNodeList currHoleCoordsDom = currHoleEl.elementsByTagName("Coordinate");
+                GeometryObject currHole;
+                for (int l = 0; l < currHoleCoordsDom.count(); l++)
+                {
+                    QDomElement currHoleCoordEl = currHoleCoordsDom.at(l).toElement();
+                    double x = currHoleCoordEl.attribute("x").toDouble();
+                    double y = currHoleCoordEl.attribute("y").toDouble();
+                    unsigned int ord_number = currHoleCoordEl.attribute("ord_number").toUInt();
+                    Coordinate currCoordinate(x, y, ord_number);
+                    currHole.push_back(currCoordinate);
+                }
+                holes.push_back(currHole);
+            }
+
+            Shell currShell(coordinates, holes);
+            currShellsVect.push_back(currShell);
         }
 
         Feature feauture(currAttrsVect, currShellsVect);

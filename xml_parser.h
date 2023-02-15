@@ -20,14 +20,14 @@ private:
     static QDomElement getFirstDomElByName(QString elementName, QDomElement rootElement = xml_parser::root);
 public:
     static QString getPath();
+    /// Задает XML-документ, с которым класс будет работать (необходимо передать путь к файлу)
     static void setPath(const QString path);
+    /// Задает XML-документ, с которым класс будет работать (необходимо передать XML-разметку в виде строки)
+    static void setXML(const QString xml_str);
+    /// Читает тип геометрического объекта
     static QString readFeatureType();
     /// Читает описание SHP-атрибутов
     static xml_header readTypeHeader();
-    /// Считывает теги Attribute (устаревший метод)
-    static features_attributes readAttributes();
-    /// Считывает теги Coordinate (устаревший метод)
-    static Shells readCoordinates();
     /// Считывает теги Feature
     static QVector<Feature> readFeautures();
 };

@@ -22,20 +22,6 @@ void tester::testReadingFeatureType(QString filePath)
     qDebug() << "End" << "\n";
 }
 
-void tester::testReadingAttributes(QString filePath)
-{
-    xml_parser::setPath(filePath);
-
-    qDebug() << "Start testReadingAttributes()";
-    features_attributes attrs = xml_parser::readAttributes();
-
-    for (int i = 0; i < attrs.count(); i++) {
-        qDebug() << "Feature[" << i << "]: " << attrs.at(i);
-    }
-
-    qDebug() << "End" << "\n";
-}
-
 void tester::testReadingDirectories()
 {
     QString lastdir = ".";
@@ -66,35 +52,10 @@ void tester::testReadingDirectories()
     }
 }
 
-void tester::testReadingFeatures(QString filePath)
+void tester::testReadingFeatures(QString filePath) // Допилить
 {
     xml_parser::setPath(filePath);
     QVector<Feature> features = xml_parser::readFeautures();
-
-    for (int i = 0; i < features.count(); i++)
-    {
-        Feature currFeature = features.at(i);
-        QVector<Attribute> currAttrs = currFeature.getAttributes();
-        Shells currShells = currFeature.getShells();
-
-        for (int j = 0; j < currAttrs.count(); j++)
-        {
-            Attribute currAttr = currAttrs.at(j);
-            qDebug() << currAttr.getName() + " " + currAttr.getValue();
-        }
-
-        for (int j = 0; j < currShells.count(); j++)
-        {
-            QVector<Coordinate> currShell = currShells.at(j);
-
-            for (int k = 0; k < currShell.count(); k++)
-            {
-                Coordinate currCoord = currShell.at(k);
-                qDebug() << QString::number(currCoord.getX()) + " " + QString::number(currCoord.getY())
-                            + " " + QString::number(currCoord.getOrdNumber());
-            }
-        }
-    }
 }
 
 tester::tester()
