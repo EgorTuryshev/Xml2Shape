@@ -24,11 +24,13 @@ public:
     void PointPush(double x, double y);
     /*Добавить свойство объекта*/
     void AddAttribute(DBFFieldType type, QString field, QString value);
-    /*Начать запись части (дырки) объекта со следующих координат.*/
+    /*Начать запись части объекта со следующих координат.*/
     /*Все координаты после вызова метода будут считаться частью SHPP_RING записываемого объекта*/
     void StartSubpart();
     /*Записать объект в ShapeFile, заданный с помощью SetShapeFile()*/
     void WriteToShapeFile();
+    void StartHole();
+    void EndHole();
 private:
     static SHPHandle shp;
     static DBFHandle dbf;
@@ -39,6 +41,9 @@ private:
 
     static void ResetShapeFile();
 
+    bool isHoleOnGoing = false;
+    QVector<double> hole_buffer_Xs;
+    QVector<double> hole_buffer_Ys;
     int currentId;
     int nParts = 1;
     int nVerts = 0;

@@ -32,6 +32,7 @@ ApplicationWindow
             property alias width: window.width
             property alias height: window.height
             property alias accent: window.accent
+            property alias i: themeSwitch.i
     }
 
     Item{
@@ -151,7 +152,7 @@ ApplicationWindow
 
             MenuBarItem
             {
-
+                id: themeSwitch
                 property var accents: [Material.Teal, Material.Purple, Material.Indigo, Material.Cyan, Material.DeepOrange];
                 property int i: 0;
                 text: "Сменить тему"

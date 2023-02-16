@@ -42,9 +42,17 @@ void Geometry::YPush(double y)
 }
 void Geometry::PointPush(double x, double y)
 {
-    XPush(x);
-    YPush(y);
-    nVerts++;
+    if(isHoleOnGoing)
+    {
+        this->hole_buffer_Xs.push_back(x);
+        this->hole_buffer_Ys.push_back(y);
+    }
+    else
+    {
+        XPush(x);
+        YPush(y);
+        nVerts++;
+    }
 }
 void Geometry::AddAttribute(DBFFieldType type, QString field, QString value)
 {
@@ -145,4 +153,21 @@ void Geometry::ResetShapeFile()
     DBFFields.clear();
     SHPId = 0;
     SHPtype = -1;
+}
+void Geometry::StartHole()
+{
+    this->isHoleOnGoing = true;
+}
+void Geometry::EndHole()
+{
+    this->isHoleOnGoing = false;
+
+    for(int i = hole_buffer_Xs.count() - 1; i > 0; i--)
+    {
+        PointPush(hole_buffer_Xs.at(i), hole_buffer_Ys.at(i));
+    }
+    PointPush(hole_buffer_Xs.first(), hole_buffer_Ys.first());
+
+    hole_buffer_Xs.clear();
+    hole_buffer_Ys.clear();
 }
