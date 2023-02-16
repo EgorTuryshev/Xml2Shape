@@ -162,7 +162,7 @@ void Geometry::EndHole()
 {
     this->isHoleOnGoing = false;
 
-    for(int i = hole_buffer_Xs.count() - 1; i > 0; i--)
+    for(int i = hole_buffer_Xs.count() - 2; i >= 0; i--)
     {
         PointPush(hole_buffer_Xs.at(i), hole_buffer_Ys.at(i));
     }
