@@ -152,41 +152,34 @@ void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Featur
         type = SHPT_POLYGON;
     }
 
-    for (int i = 0; i < features.count(); i++) // Не учитывает несколько Shell
+    for (int i = 0; i < features.count(); i++)
     {
         Feature currFeature = features.at(i);
         Geometry polygon(type);
         QVector<Shell> shells = currFeature.getShells();
-        for (int j = 0; j < 1; j++) // Не забыть заменить 1 на shells.count()
+        for (int j = 0; j < shells.count(); j++)
         {
-            if (shells.count() == 0) // Потом убрать
-            {
-                break;
-            }
-
             Shell currShell = shells.at(j);
             GeometryObject coordinates = currShell.getCoordinates();
+            polygon.StartSubpart();
             for (int k = 0; k < coordinates.count(); k++)
             {
                 Coordinate currCoordinate = coordinates.at(k);
                 polygon.PointPush(currCoordinate.getX(), currCoordinate.getY());
             }
             QVector<GeometryObject> holes = currShell.getHoles();
-            for (int k = 0; k < 1; k++) // // Не забыть заменить 1 на holes.count()
+            for (int k = 0; k < holes.count(); k++)
             {
-                if (holes.count() == 0) // Потом убрать
-                {
-                    break;
-                }
-
                 GeometryObject currHole = holes.at(k);
-                polygon.StartSubpart();
+                polygon.StartHole();
 
                 for (int l = 0; l < currHole.count(); l++)
                 {
                     Coordinate currHoleCoordinate = currHole.at(l);
                     polygon.PointPush(currHoleCoordinate.getX(), currHoleCoordinate.getY());
                 }
+
+                polygon.EndHole();
             }
         }
 

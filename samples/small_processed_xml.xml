@@ -1,0 +1,25 @@
+<ShapeFile>
+	<FeatureType geometry_type="MultiPolygon">
+		<Attributes>
+		</Attributes>
+	</FeatureType>
+	<Features>
+		<Feature>
+			<Attributes>
+			</Attributes>
+			<Geometry>
+				<Shell>
+					<Coordinate x="841856.76" y="5298135.13" ord_number="1"/>
+					<Coordinate x="841861.7" y="5298140.07" ord_number="2"/>
+					<Coordinate x="841861.82" y="5298142.42" ord_number="3"/>
+					<Coordinate x="841863.81" y="5298143.65" ord_number="4"/>
+					<Coordinate x="841862.59" y="5298145.64" ord_number="5"/>
+					<Coordinate x="841860.6" y="5298144.42" ord_number="6"/>
+					<Coordinate x="841857.43" y="5298144.3" ord_number="7"/>
+					<Coordinate x="841852.51" y="5298139.23" ord_number="8"/>
+					<Coordinate x="841856.76" y="5298135.13" ord_number="9"/>
+				</Shell>
+			</Geometry>
+		</Feature>
+	</Features>
+</ShapeFile>

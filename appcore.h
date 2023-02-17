@@ -14,6 +14,13 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
+enum CheckState
+{
+    Unchecked,
+    PartiallyChecked,
+    Checked
+};
+
 class Appcore : public QObject
 {
     Q_OBJECT
@@ -22,6 +29,7 @@ public:
     Q_INVOKABLE void test();
     Q_INVOKABLE void openLog();
     Q_INVOKABLE void clearLog();
+    Q_INVOKABLE void autoClearingLogChanged(CheckState newState);
 };
 
 #endif // APPCORE_H

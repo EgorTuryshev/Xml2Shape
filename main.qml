@@ -197,8 +197,10 @@ ApplicationWindow
             }
             CheckBox
             {
-                text: "Автоочитска лога"
+                text: "Автоочистка лога"
                 checked: true
+                checkState: allChildrenChecked ? Qt.Checked :
+                                   anyChildChecked ? Qt.PartiallyChecked : Qt.Unchecked
             }
         }
         Menu

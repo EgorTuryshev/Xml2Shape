@@ -97,7 +97,19 @@ QVector<Feature> xml_parser::readFeautures()
         }
 
         QDomElement currFeatureGeometryEl = currFeature.firstChildElement("Geometry");
+
+        if (currFeatureGeometryEl.isNull())
+        {
+            continue;
+        }
+
         QDomNodeList shellsDom = currFeatureGeometryEl.elementsByTagName("Shell");
+
+        if (shellsDom.count() == 0)
+        {
+            continue;
+        }
+
         QVector<Shell> currShellsVect;
 
         for (int j = 0; j < shellsDom.count(); j++)

@@ -2,10 +2,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include "tester.h"
 #include <iostream>
 #include <QDateTime>
-#include "xslt_processor.h"
 #include <QString>
 
 QScopedPointer<QFile>   m_logFile;
