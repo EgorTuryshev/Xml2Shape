@@ -14,22 +14,15 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-enum CheckState
-{
-    Unchecked,
-    PartiallyChecked,
-    Checked
-};
-
 class Appcore : public QObject
 {
     Q_OBJECT
 public:
     explicit Appcore(QObject * parent = nullptr);
-    Q_INVOKABLE void test();
+    Q_INVOKABLE void test(QString xmlFilePath = "../Xml2Shape/samples/test.xml",
+                          QString xslFilePath = "../Xml2Shape/samples/kpt.xsl");
     Q_INVOKABLE void openLog();
     Q_INVOKABLE void clearLog();
-    Q_INVOKABLE void autoClearingLogChanged(CheckState newState);
 };
 
 #endif // APPCORE_H

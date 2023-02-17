@@ -4,6 +4,7 @@ import QtQuick.Window 2.15
 import Qt5Compat.GraphicalEffects
 import QtQml
 import Qt.labs.settings 1.0
+import QtQuick.Dialogs
 import "qrc:/qres/"
 
 ApplicationWindow
@@ -13,6 +14,13 @@ ApplicationWindow
     Connections
     {
         target: appcore
+    }
+
+    onClosing: {
+        if (autoClear.checked)
+        {
+            appcore.clearLog();
+        }
     }
 
     property int accent: Material.Teal
@@ -33,6 +41,7 @@ ApplicationWindow
             property alias height: window.height
             property alias accent: window.accent
             property alias i: themeSwitch.i
+            property alias isAutoClear: autoClear.checked
     }
 
     Item{
@@ -74,7 +83,32 @@ ApplicationWindow
             anchors.bottomMargin: 50
             text: "Записать ShapeFile"
             onClicked:{
-                appcore.test();
+                appcore.test(selectXMLBtn.filePath);
+            }
+        }
+
+        UI_Button
+        {
+            id: selectXMLBtn
+            property string filePath: ""
+
+            anchors.bottom: border.bottom
+            anchors.right: writeBtn.left
+            anchors.rightMargin: 5
+            anchors.bottomMargin: 50
+            text: "Выбрать XML-файл"
+            onClicked:{
+                xmlFileDialog.open();
+            }
+        }
+
+        FileDialog {
+            id: xmlFileDialog
+            nameFilters: ["XML files (*.xml)"]
+            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+            onAccepted: {
+                selectXMLBtn.filePath = selectedFile;
+                console.log(selectedFile);
             }
         }
 
@@ -197,10 +231,14 @@ ApplicationWindow
             }
             CheckBox
             {
+                id: autoClear
                 text: "Автоочистка лога"
                 checked: true
-                checkState: allChildrenChecked ? Qt.Checked :
-                                   anyChildChecked ? Qt.PartiallyChecked : Qt.Unchecked
+
+                onCheckedChanged:
+                {
+                   appcore.autoClearingLogChanged(checked);
+                }
             }
         }
         Menu

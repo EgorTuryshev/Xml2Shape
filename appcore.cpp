@@ -4,9 +4,19 @@ Appcore::Appcore(QObject *parent) : QObject(parent)
 {
 
 }
-void Appcore::test(){
-    xslt_processor::setcwd("./");
-    QString processedXML_str = xslt_processor::processXSLT("../Xml2Shape/samples/test.xml", "../Xml2Shape/samples/kpt.xsl");
+void Appcore::test(QString xmlFilePath, QString xslFilePath){
+    if (xmlFilePath.first(8) == "file:///")
+    {
+        xmlFilePath = xmlFilePath.remove(0, 8);
+    }
+    if (xslFilePath.first(8) == "file:///")
+    {
+        xslFilePath = xslFilePath.remove(0, 8);
+    }
+
+    qDebug(logDebug()) << xmlFilePath << " " << xslFilePath;
+    xslt_processor::setcwd("");
+    QString processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
     xml_parser::setXML(processedXML_str);
     QString featureType = xml_parser::readFeatureType();
     xml_header header = xml_parser::readTypeHeader();
@@ -24,9 +34,4 @@ void Appcore::openLog()
 void Appcore::clearLog()
 {
     qWarning(clr()) << "Лог был очищен пользователем";
-}
-
-void Appcore::autoClearingLogChanged(CheckState newState)
-{
-
 }
