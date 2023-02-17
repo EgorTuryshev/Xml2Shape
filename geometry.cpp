@@ -6,6 +6,7 @@ SHPHandle Geometry::shp;
 DBFHandle Geometry::dbf;
 QVector<QString> Geometry::DBFFields;
 const char* Geometry::SHPpath = "UNKNOWN";
+bool Geometry::isSmartReverseEnabled = false;
 
 Geometry::Geometry(int v_SHPtype)
 {
@@ -42,17 +43,9 @@ void Geometry::YPush(double y)
 }
 void Geometry::PointPush(double x, double y)
 {
-    if(isHoleOnGoing)
-    {
-        this->hole_buffer_Xs.push_back(x);
-        this->hole_buffer_Ys.push_back(y);
-    }
-    else
-    {
-        XPush(x);
-        YPush(y);
-        nVerts++;
-    }
+    XPush(x);
+    YPush(y);
+    nVerts++;
 }
 void Geometry::AddAttribute(DBFFieldType type, QString field, QString value)
 {
@@ -80,6 +73,7 @@ void Geometry::AddAttribute(DBFFieldType type, QString field, QString value)
 }
 void Geometry::StartSubpart()
 {
+    SmartReverse();
     nParts++;
     IteratorsOfVerts.push_back(nVerts);
 }
@@ -157,17 +151,97 @@ void Geometry::ResetShapeFile()
 void Geometry::StartHole()
 {
     this->isHoleOnGoing = true;
+    StartSubpart();
 }
 void Geometry::EndHole()
 {
+    SmartReverse();
     this->isHoleOnGoing = false;
+}
+bool Geometry::IsClockWise(QVector<double> icw_Xs, QVector<double> icw_Ys)
+{
+    double s = 0;
 
-    for(int i = hole_buffer_Xs.count() - 2; i >= 0; i--)
+    for(int i = 0; i < icw_Xs.count() - 1; i++)
     {
-        PointPush(hole_buffer_Xs.at(i), hole_buffer_Ys.at(i));
+        s += icw_Xs.at(i) * icw_Ys.at(i + 1) - icw_Ys.at(i) * icw_Xs.at(i + 1);
     }
-    PointPush(hole_buffer_Xs.first(), hole_buffer_Ys.first());
 
-    hole_buffer_Xs.clear();
-    hole_buffer_Ys.clear();
+    return s < 0 ? true : false;
+}
+void Geometry::Reverse()
+{
+    QVector<double> buffered_Xs = this->GetXs().mid(IteratorsOfVerts.last());
+    QVector<double> buffered_Ys = this->GetYs().mid(IteratorsOfVerts.last());
+
+    QVector<double> permutated_Xs;
+    QVector<double> permutated_Ys;
+
+    for(int i = buffered_Xs.count() - 2; i >= 0; i--)
+    {
+        permutated_Xs.push_back(buffered_Xs.at(i));
+        permutated_Ys.push_back(buffered_Ys.at(i));
+    }
+    permutated_Xs.push_back(permutated_Xs.first());
+    permutated_Ys.push_back(permutated_Ys.first());
+
+    buffered_Xs.clear();
+    buffered_Ys.clear();
+
+    qDebug(logDebug()) << permutated_Xs;
+    int j = 0;
+    for(int i = IteratorsOfVerts.last(); i < Xs.count(); i++)
+    {
+        Xs[i] = permutated_Xs.at(j);
+        Ys[i] = permutated_Ys.at(j);
+        j++;
+    }
+
+    permutated_Xs.clear();
+    permutated_Ys.clear();
+}
+void Geometry::Reverse(QVector<double> &buffered_Xs, QVector<double> &buffered_Ys)
+{
+    QVector<double> permutated_Xs;
+    QVector<double> permutated_Ys;
+
+    for(int i = buffered_Xs.count() - 2; i >= 0; i--)
+    {
+        permutated_Xs.push_back(buffered_Xs.at(i));
+        permutated_Ys.push_back(buffered_Ys.at(i));
+    }
+    permutated_Xs.push_back(permutated_Xs.first());
+    permutated_Ys.push_back(permutated_Ys.first());
+
+    buffered_Xs.clear();
+    buffered_Ys.clear();
+
+    qDebug(logDebug()) << permutated_Xs;
+    int j = 0;
+    for(int i = IteratorsOfVerts.last(); i < Xs.count(); i++)
+    {
+        Xs[i] = permutated_Xs.at(j);
+        Ys[i] = permutated_Ys.at(j);
+        j++;
+    }
+
+    permutated_Xs.clear();
+    permutated_Ys.clear();
+}
+void Geometry::SmartReverse()
+{
+    if(isSmartReverseEnabled)
+    {
+        QVector<double> buffered_Xs = this->GetXs().mid(IteratorsOfVerts.last());
+        QVector<double> buffered_Ys = this->GetYs().mid(IteratorsOfVerts.last());
+
+        if((IsClockWise(buffered_Xs, buffered_Ys) && isHoleOnGoing) || (!IsClockWise(buffered_Xs, buffered_Ys) && !isHoleOnGoing))
+        {
+            Reverse(buffered_Xs, buffered_Ys);
+        }
+    }
+}
+void Geometry::SetSmartReverse(const bool isEnabled)
+{
+    isSmartReverseEnabled = isEnabled;
 }
