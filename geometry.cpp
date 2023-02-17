@@ -73,7 +73,7 @@ void Geometry::AddAttribute(DBFFieldType type, QString field, QString value)
 }
 void Geometry::StartSubpart()
 {
-    SmartReverse();
+    if (nParts > 0) SmartReverse();
     nParts++;
     IteratorsOfVerts.push_back(nVerts);
 }

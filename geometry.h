@@ -58,7 +58,7 @@ private:
 
     bool isHoleOnGoing = false;
     int currentId;
-    int nParts = 1;
+    int nParts = 0;
     int nVerts = 0;
     QVector<double> Xs;
     QVector<double> Ys;

@@ -150,6 +150,7 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
 
 void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features)
 {
+    Geometry::SetSmartReverse(true);
     Geometry::SetShapeFile("test_shape");
     short int type = 0;
 
