@@ -26,6 +26,12 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
     //в конструкторе теперь необходим тип объекта
     Geometry polygon(SHPT_POLYGON);
 
+    /*polygon.PointPush(72, 57);
+    polygon.PointPush(89, 57);
+    polygon.PointPush(92, 68);
+    polygon.PointPush(75, 67);
+    polygon.PointPush(72, 57);*/
+
     polygon.PointPush(75, 67);
     polygon.PointPush(92, 68);
     polygon.PointPush(89, 57);
@@ -33,13 +39,13 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
     polygon.PointPush(75, 67);
 
     //просто изменение синтаксиса
-    polygon.StartSubpart();
+    /*polygon.StartHole();
     polygon.PointPush(81, 63);
     polygon.PointPush(84, 63);
     polygon.PointPush(84, 61);
     polygon.PointPush(81, 62);
     polygon.PointPush(81, 63);
-    //теперь не пишем EndHole()
+    polygon.EndHole();*/
 
     //теперь не создаем поля таблицы, а сразу присваиваем атрибуты
     polygon.AddAttribute(FTString, "header", "some_val");
@@ -51,7 +57,7 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
     polygon.WriteToShapeFile();
 
     //
-    Geometry new_polygon(SHPT_POLYGON);
+    /*Geometry new_polygon(SHPT_POLYGON);
 
     new_polygon.PointPush(65, 75);
     new_polygon.PointPush(97, 72);
@@ -61,7 +67,7 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
 
     new_polygon.AddAttribute(FTString, "header", "i_am_new");
 
-    new_polygon.WriteToShapeFile();
+    new_polygon.WriteToShapeFile();*/
 
     //перенос всего записанного выше в файл
     Geometry::SaveShapeFile();

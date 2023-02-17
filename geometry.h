@@ -20,6 +20,13 @@ public:
     static void SetShapeFile(const char* path);
     /*Сохранение файла в файловой системе*/
     static void SaveShapeFile();
+    /*Проверка на запись по часовой стрелке*/
+    /*Использовать не рекомендуется*/
+    static bool IsClockWise(QVector<double> icw_Xs, QVector<double> icw_Ys);
+    /*Переключатель умной записи субчастей*/
+    /*Default = false*/
+    /*При true проверяет и исправляет грязные субчасти*/
+    static void SetSmartReverse(const bool isEnabled);
     /*Добавить новую точку (координату) в объект*/
     void PointPush(double x, double y);
     /*Добавить свойство объекта*/
@@ -29,9 +36,17 @@ public:
     void StartSubpart();
     /*Записать объект в ShapeFile, заданный с помощью SetShapeFile()*/
     void WriteToShapeFile();
+    /*Начать запись дырки*/
     void StartHole();
+    /*Закончить запись дырки*/
     void EndHole();
+    /*НЕ ИСПОЛЬЗОВАТЬ*/
+    void Reverse();
+
+    QVector<double> GetXs();
+    QVector<double> GetYs();
 private:
+    static bool isSmartReverseEnabled;
     static SHPHandle shp;
     static DBFHandle dbf;
     static int SHPId;
@@ -42,8 +57,6 @@ private:
     static void ResetShapeFile();
 
     bool isHoleOnGoing = false;
-    QVector<double> hole_buffer_Xs;
-    QVector<double> hole_buffer_Ys;
     int currentId;
     int nParts = 1;
     int nVerts = 0;
@@ -54,9 +67,9 @@ private:
 
     void XPush(double x);
     void YPush(double y);
-    QVector<double> GetXs();
-    QVector<double> GetYs();
     void WriteToSHP(SHPHandle shp);
     void WriteToDBF(DBFHandle dbf);
+    void SmartReverse();
+    void Reverse(QVector<double> &buffered_Xs, QVector<double> &buffered_Ys);
 };
 #endif // GEOMETRY_H
