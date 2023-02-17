@@ -42,6 +42,7 @@ ApplicationWindow
             property alias accent: window.accent
             property alias i: themeSwitch.i
             property alias isAutoClear: autoClear.checked
+            property alias autoDirtyFix: autoDirtyFix.checked
     }
 
     Item{
@@ -252,6 +253,12 @@ ApplicationWindow
             MenuBarItem
             {
                 text: "Исправить разметку"
+            }
+            CheckBox
+            {
+                id: autoDirtyFix
+                checked: true
+                text: "Автоисправление грязных полигонов"
             }
             CheckBox
             {

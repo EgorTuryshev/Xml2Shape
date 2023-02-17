@@ -23,7 +23,9 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath){
     QVector<Feature> features = xml_parser::readFeautures();
 
     IO_Shape s;
+    //s.WriteShape();
     s.WriteShape(featureType, header, features);
+
 }
 void Appcore::openLog()
 {
