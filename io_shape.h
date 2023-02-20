@@ -10,7 +10,7 @@ class IO_Shape
 public:
     IO_Shape();
     void WriteShape();
-    void WriteShape(QString featureType, xml_header header, QVector<Feature> features);
+    void WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath = "test");
     static const char* typeStr(int type);
 };
 

@@ -19,7 +19,7 @@ ApplicationWindow
     onClosing: {
         if (autoClear.checked)
         {
-            appcore.clearLog();
+            appcore.clearLog(autoClear.checked);
         }
     }
 
@@ -83,21 +83,34 @@ ApplicationWindow
             anchors.rightMargin: 20
             anchors.bottomMargin: 50
             text: "Записать ShapeFile"
-            onClicked:{
-                appcore.test(selectXMLBtn.filePath);
+            onClicked: {
+                folderDialog.open();
+            }
+        }
+
+        FolderDialog {
+            id: folderDialog
+            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // Изменить
+            acceptLabel: "Выбрать"
+
+            onAccepted: {
+                for (var i = 0; i < selectXMLBtn.filePaths.length; i++)
+                {
+                    appcore.test(selectXMLBtn.filePaths[i], "../Xml2Shape/samples/kpt.xsl", folderDialog.selectedFolder); // TO-DO: переделать, это тест
+                }
             }
         }
 
         UI_Button
         {
             id: selectXMLBtn
-            property string filePath: ""
+            property var filePaths: []
 
             anchors.bottom: border.bottom
             anchors.right: writeBtn.left
             anchors.rightMargin: 5
             anchors.bottomMargin: 50
-            text: "Выбрать XML-файл"
+            text: "Выбрать XML-файл(ы)"
             onClicked:{
                 xmlFileDialog.open();
             }
@@ -106,10 +119,11 @@ ApplicationWindow
         FileDialog {
             id: xmlFileDialog
             nameFilters: ["XML files (*.xml)"]
-            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // Изменить
+            acceptLabel: "Выбрать"
+            fileMode: FileDialog.OpenFiles
             onAccepted: {
-                selectXMLBtn.filePath = selectedFile;
-                console.log(selectedFile);
+                selectXMLBtn.filePaths = selectedFiles;
             }
         }
 
@@ -193,7 +207,7 @@ ApplicationWindow
                 text: "Сменить тему"
                 onClicked:
                 {
-                    if(i < accents.length - 1)
+                    if (i < accents.length - 1)
                     {
                        i++;
                     }

@@ -20,9 +20,10 @@ class Appcore : public QObject
 public:
     explicit Appcore(QObject * parent = nullptr);
     Q_INVOKABLE void test(QString xmlFilePath = "../Xml2Shape/samples/test.xml",
-                          QString xslFilePath = "../Xml2Shape/samples/kpt.xsl");
+                          QString xslFilePath = "../Xml2Shape/samples/kpt.xsl",
+                          QString targetPath = "./"); // ?
     Q_INVOKABLE void openLog();
-    Q_INVOKABLE void clearLog();
+    Q_INVOKABLE void clearLog(bool isAutoClearing = false);
 };
 
 #endif // APPCORE_H

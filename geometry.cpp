@@ -90,19 +90,19 @@ void Geometry::WriteToDBF(DBFHandle dbf)
         switch(currentGAT.GetType())
         {
             case FTString:
-            if(DBFWriteStringAttribute(dbf, currentId - 1, currentGAT.GetField(), &currentGAT.GetValue().toStdString()[0] ) == 0)
+            if (DBFWriteStringAttribute(dbf, currentId - 1, currentGAT.GetField(), &currentGAT.GetValue().toStdString()[0] ) == false)
             {
                qCritical(logCritical()) << "Не удалось записать атрибут FTString по id " << currentId - 1;
             }
             break;
             case FTDouble:
-            if(DBFWriteDoubleAttribute(dbf, currentId - 1, currentGAT.GetField(), currentGAT.GetValue().toDouble() ) == 0)
+            if (DBFWriteDoubleAttribute(dbf, currentId - 1, currentGAT.GetField(), currentGAT.GetValue().toDouble() ) == false)
             {
                 qCritical(logCritical()) << "Не удалось записать атрибут FTDouble по id " << currentId - 1;
             }
             break;
             case FTInteger:
-            if(DBFWriteIntegerAttribute(dbf, currentId - 1, currentGAT.GetField(), currentGAT.GetValue().toInt() ) == 0)
+            if (DBFWriteIntegerAttribute(dbf, currentId - 1, currentGAT.GetField(), currentGAT.GetValue().toInt() ) == false)
             {
                 qCritical(logCritical()) << "Не удалось записать атрибут FTInteger по id " << currentId - 1;
             }
@@ -117,6 +117,7 @@ void Geometry::SetShapeFile(const char* path)
 {
     ResetShapeFile();
     SHPpath = path;
+    qDebug(logDebug()) << SHPpath;
 }
 void Geometry::SaveShapeFile()
 {
@@ -124,7 +125,7 @@ void Geometry::SaveShapeFile()
     {
         SHPClose(shp);
         DBFClose(dbf);
-    } catch(...)
+    } catch (...)
     {
         qCritical(logCritical()) << "Запись в файл не удалась";
     }
