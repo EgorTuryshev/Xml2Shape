@@ -90,7 +90,7 @@ ApplicationWindow
 
         FolderDialog {
             id: folderDialog
-            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // Изменить
+            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // TO-DO: Изменить
             acceptLabel: "Выбрать"
 
             onAccepted: {
@@ -119,7 +119,7 @@ ApplicationWindow
         FileDialog {
             id: xmlFileDialog
             nameFilters: ["XML files (*.xml)"]
-            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // Изменить
+            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // TO-DO: Изменить
             acceptLabel: "Выбрать"
             fileMode: FileDialog.OpenFiles
             onAccepted: {

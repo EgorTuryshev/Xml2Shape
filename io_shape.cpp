@@ -15,6 +15,49 @@
 
 using namespace std;
 
+QString getUniqueFilePath(QString filePath, int i = 1) // CHECK: Я не уверен, что это оптимальный способ
+{
+    QFileInfo fileInfo(filePath);
+    QString newFilePath = filePath;
+    bool isUnique = true;
+
+    QDirIterator it(fileInfo.dir(), QDirIterator::NoIteratorFlags);
+    while (it.hasNext())
+    {
+        QFileInfo currFileInfo(it.next());
+        if (currFileInfo.isDir()) continue;
+
+        //qDebug() << "Текущий файл: " << currFileInfo.fileName();
+        if (i == 1)
+        {
+            //qDebug() << fileInfo.fileName() + " == " + QFileInfo(currFileInfo.fileName()).completeBaseName();
+            if (fileInfo.fileName() == QFileInfo(currFileInfo.fileName()).completeBaseName())
+            {
+                isUnique = false;
+                newFilePath = getUniqueFilePath(filePath, i + 1);
+            }
+        }
+        else
+        {
+            //qDebug() << fileInfo.fileName() + "_" + QString::number(i) + " == " + QFileInfo(currFileInfo.fileName()).completeBaseName();
+            if (fileInfo.fileName() + "_" + QString::number(i) == QFileInfo(currFileInfo.fileName()).completeBaseName())
+            {
+                isUnique = false;
+                newFilePath = getUniqueFilePath(filePath, i + 1);
+            }
+        }
+    }
+
+    if (isUnique && i != 1)
+    {
+        return (newFilePath + "_" + QString::number(i));
+    }
+    else
+    {
+        return newFilePath;
+    }
+}
+
 IO_Shape::IO_Shape()
 {
 }
@@ -151,8 +194,9 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
 void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath)
 {
     Geometry::SetSmartReverse(true);
-    char *filePathC = (char*)malloc(filePath.length() + 1);
-    strcpy(filePathC, filePath.toStdString().c_str()); // TO-DO: Можно в будущем изменить на более безопасную функцию
+    QString uniqueFilePath = getUniqueFilePath(filePath);
+    char *filePathC = (char*)malloc(uniqueFilePath.length() + 1);
+    strcpy(filePathC, uniqueFilePath.toStdString().c_str()); // TO-DO: Можно в будущем изменить на более безопасную функцию
     Geometry::SetShapeFile(filePathC);
     short int type = 0;
 
