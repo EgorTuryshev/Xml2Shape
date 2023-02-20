@@ -148,13 +148,15 @@ void IO_Shape::WriteShape() // Тестовая функция записи shp 
         categories.last().Debug_DisplayCategory();*/
 }
 
-void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features)
+void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath)
 {
     Geometry::SetSmartReverse(true);
-    Geometry::SetShapeFile("test_shape");
+    char *filePathC = (char*)malloc(filePath.length() + 1);
+    strcpy(filePathC, filePath.toStdString().c_str()); // TO-DO: Можно в будущем изменить на более безопасную функцию
+    Geometry::SetShapeFile(filePathC);
     short int type = 0;
 
-    if (featureType == "MultiPolygon") // Добавить другие типы
+    if (featureType == "MultiPolygon") // TO-DO: Добавить другие типы
     {
         type = SHPT_POLYGON;
     }
@@ -209,7 +211,7 @@ void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Featur
             {
                 polygon.AddAttribute(FTString, currAttribute.getName(), currAttribute.getValue());
             }
-            else if (type == "Number") // Тут double или int?
+            else if (type == "Number") // CHECK: Тут double или int?
             {
                 polygon.AddAttribute(FTDouble, currAttribute.getName(), currAttribute.getValue());
             }
@@ -221,7 +223,7 @@ void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Featur
     Geometry::SaveShapeFile();
 }
 
-const char* IO_Shape::typeStr(int def){ //Только заготовка под определение GeometryType из XML, надо будет менять
+const char* IO_Shape::typeStr(int def){ // TO-DO: Только заготовка под определение GeometryType из XML, надо будет менять
     switch (def){
     case SHPT_NULL:
         return "SHPT_NULL";
