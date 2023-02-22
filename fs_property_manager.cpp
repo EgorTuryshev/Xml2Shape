@@ -12,7 +12,6 @@ QString fs_property_manager::GetPropertyValue(QString path, QString pname)
             return "";
         }
 
-
         QString line = "";
         QTextStream in(&file);
         while (!in.atEnd() && !line.contains(pname + ": ")) {
@@ -24,4 +23,12 @@ QString fs_property_manager::GetPropertyValue(QString path, QString pname)
 QString fs_property_manager::GetFileName(QString path)
 {
     return QFileInfo(path).fileName();
+}
+QString fs_property_manager::GetNameProperty(QString path)
+{
+    return GetPropertyValue(path, "Name");
+}
+QString fs_property_manager::GetDescProperty(QString path)
+{
+    return GetPropertyValue(path, "Description");
 }

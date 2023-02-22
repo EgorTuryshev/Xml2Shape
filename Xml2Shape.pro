@@ -13,6 +13,7 @@ HEADERS += \
     geometry_attribute.h \
     io_shape.h \
     loggingcategories.h \
+    model_generator.h \
     shapelib/shapefil.h \
     tester.h \
     xml_parser.h \
@@ -29,6 +30,7 @@ SOURCES += \
     io_shape.cpp \
     loggingcategories.cpp \
     main.cpp    \
+    model_generator.cpp \
     shapelib/safileio.c \
     shapelib/shpopen.c  \
     shapelib/dbfopen.c \

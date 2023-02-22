@@ -1,10 +1,11 @@
 #include "fs_category.h"
 #include "loggingcategories.h"
 
-fs_category::fs_category(QString  name, QString  path)
+fs_category::fs_category(QString  name, QString  path, QString description)
 {
     this->_name = name;
     this->_path = path;
+    this->_description = description;
 }
 QString  fs_category::GetName()
 {
@@ -28,12 +29,11 @@ void fs_category::SetXslts(QVector<fs_xslt> xslts)
 }
 void fs_category::Debug_DisplayCategory()
 {
-    qDebug(logDebug()) << "ИМЯ КАТЕГОРИИ: " << this->GetName();
     qDebug(logDebug()) << "ПУТЬ К КАТЕГОРИИ: " << this->GetPath();
     for (int i = 0; i < this->_xslts.count(); i++)
     {
-        qDebug(logDebug()) << i <<" ИМЯ: "<< this->_xslts[i].GetPName();
-        qDebug(logDebug()) << i <<" ОПИСАНИЕ: "<< this->_xslts[i].GetDesc();
+        qDebug(logDebug()) << i <<" ИМЯ XSLT: "<< this->_xslts[i].GetPName();
+        qDebug(logDebug()) << i <<" ОПИСАНИЕ XSLT: "<< this->_xslts[i].GetDesc();
         qDebug(logDebug()) << i <<" FS_ИМЯ: "<< this->_xslts[i].GetRName();
     }
 }

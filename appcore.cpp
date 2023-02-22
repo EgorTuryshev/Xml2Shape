@@ -15,6 +15,92 @@ QString removeExt(QString str)
     return (str.first(dotInd));
 }
 
+int SwitchString(QString str)
+{
+    if(str == "root.desc")
+    {
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
+
+}
+
+QVector <fs_category> Appcore::ReadCategories()
+{
+    QString  lastdir = ".";
+    QString itdir = ".";
+    QVector <QString> file_paths;
+    QVector <fs_category> categories;
+    QVector <fs_xslt> category_xslts;
+
+    bool ReadMarker = true;
+    bool isOnLastDir = false;
+
+    QDirIterator it(QDir::currentPath() + "/templates", {"*.desc"}, QDir::Files, QDirIterator::Subdirectories);
+
+    if (it.hasNext())
+    {
+        it.next();
+        itdir = QFileInfo(it.filePath()).dir().dirName();
+        lastdir = itdir;
+    }
+
+    while(ReadMarker || isOnLastDir)
+    {
+        if(lastdir != itdir || isOnLastDir)
+        {
+            for(int i = 0; i < file_paths.count(); i++)
+            {
+                QString filename = fs_property_manager::GetFileName(file_paths[i]);
+                QString name = fs_property_manager::GetNameProperty(file_paths[i]);
+                QString description = fs_property_manager::GetDescProperty(file_paths[i]);
+
+                switch(SwitchString(filename))
+                {
+                case 0:
+                {
+                    categories.push_back(fs_category(name, file_paths[i].mid(0, file_paths[i].lastIndexOf("/") + 1), description));
+                    break;
+                }
+                default:
+                {
+                    category_xslts.push_back(fs_xslt(name, filename, description));
+                    break;
+                }
+                }
+            }
+
+            categories.last().SetXslts(category_xslts);
+            categories.last().Debug_DisplayCategory();
+
+            lastdir = itdir;
+            file_paths.clear();
+            category_xslts.clear();
+            isOnLastDir = false;
+        }
+        else
+        {
+            file_paths.push_back(it.filePath());
+
+            if(it.hasNext())
+            {
+                it.next();
+                itdir = QFileInfo(it.filePath()).dir().dirName();
+            }
+            else
+            {
+                ReadMarker = false;
+                isOnLastDir = true;
+            }
+
+        }
+    }
+    return categories;
+}
+
 Appcore::Appcore(QObject *parent) : QObject(parent) { }
 
 void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath){
@@ -43,7 +129,6 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
     QVector<Feature> features = xml_parser::readFeautures();
 
     IO_Shape s;
-    //s.WriteShape();
     s.WriteShape(featureType, header, features, filePath);
 
 }

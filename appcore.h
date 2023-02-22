@@ -13,6 +13,9 @@
 #include <QQmlComponent>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include "fs_property_manager.h"
+#include "fs_category.h"
+#include "fs_xslt.h"
 
 class Appcore : public QObject
 {
@@ -24,6 +27,7 @@ public:
                           QString targetPath = "./"); // ?
     Q_INVOKABLE void openLog();
     Q_INVOKABLE void clearLog(bool isAutoClearing = false);
+    Q_INVOKABLE QVector<fs_category> ReadCategories();
 };
 
 #endif // APPCORE_H
