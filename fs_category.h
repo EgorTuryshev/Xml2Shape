@@ -8,7 +8,7 @@
 class fs_category
 {
 public:
-    fs_category(QString  name, QString  path);
+    fs_category(QString  name, QString  path, QString description);
     QString  GetName();
     QString  GetPath();
     QVector<fs_xslt> GetXslts();
@@ -17,6 +17,7 @@ public:
     void Debug_DisplayCategory();
 private:
     QString  _name;
+    QString _description;
     QString  _path;
     QVector<fs_xslt> _xslts;
 };

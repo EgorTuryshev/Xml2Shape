@@ -86,6 +86,7 @@ ApplicationWindow
             onClicked: {
                 folderDialog.open();
                 pBar.visible = true;
+                appcore.test();
             }
         }
 
@@ -137,7 +138,14 @@ ApplicationWindow
             anchors.leftMargin: 15
             anchors.topMargin: 50
             width: 200
-            model: ["Категория не выбрана", "1", "2"]
+            textRole: "display"
+            //["Категория не выбрана"]
+            model: model_categories
+            onCurrentTextChanged:
+            {
+                model.display = currentText
+                generator.generate(currentText)
+            }
         }
 
         UI_Combo
@@ -147,7 +155,9 @@ ApplicationWindow
             anchors.left: categoryCombo.right
             anchors.leftMargin: 5
             anchors.topMargin: 50
-            width: 200
+            width: 200  
+            model: model_xslts
+            textRole: "display"
         }
 
         /*Label

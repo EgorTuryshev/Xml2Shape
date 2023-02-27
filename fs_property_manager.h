@@ -9,6 +9,8 @@ class fs_property_manager
 public:
     static QString GetPropertyValue(QString path, QString pname);
     static QString GetFileName(QString path);
+    static QString GetNameProperty(QString path);
+    static QString GetDescProperty(QString path);
 private:
     fs_property_manager();
 };
