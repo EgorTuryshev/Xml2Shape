@@ -85,6 +85,7 @@ ApplicationWindow
             text: "Записать ShapeFile"
             onClicked: {
                 folderDialog.open();
+                pBar.visible = true;
             }
         }
 
@@ -98,6 +99,7 @@ ApplicationWindow
                 {
                     appcore.test(selectXMLBtn.filePaths[i], "../Xml2Shape/samples/kpt.xsl", folderDialog.selectedFolder); // TO-DO: переделать, это тест
                 }
+                pBar.visible = false;
             }
         }
 
@@ -176,7 +178,7 @@ ApplicationWindow
             anchors.leftMargin: 30
             anchors.rightMargin: 30
             indeterminate: true
-            visible: true
+            visible: false
             background: Rectangle
             {
                 implicitWidth: 200
