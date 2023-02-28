@@ -9,9 +9,10 @@ class fs_category
 {
 public:
     fs_category(QString  name, QString  path, QString description);
-    QString  GetName();
-    QString  GetPath();
-    QVector<fs_xslt> GetXslts();
+    QString  GetName() const;
+    QString  GetPath() const;
+    QString GetDescription() const;
+    QVector<fs_xslt> GetXslts() const;
     void PushXslt(fs_xslt xslt);
     void SetXslts(QVector<fs_xslt> xslts);
     void Debug_DisplayCategory();

@@ -7,6 +7,10 @@
 #include <QString>
 #include <QStringListModel>
 #include <model_generator.h>
+#include <fs_category.h>
+#include <QFile>
+#include <model_generator.h>
+#include <loggingcategories.h>
 
 QScopedPointer<QFile>   m_logFile;
 
@@ -40,7 +44,8 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     QStringListModel model_categories, model_xslts;
-    Model_Generator generator(&model_xslts);
+    Appcore appcore;
+    Model_Generator generator(&model_xslts, &appcore);
     const QUrl url(u"qrc:/Xml2Shape/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
@@ -55,11 +60,15 @@ int main(int argc, char *argv[])
     m_logFile.data()->open(QFile::Append | QFile::Text);
     qInstallMessageHandler(messageHandler);
 
+    appcore.ReadCategories();
+
     QStringList list;
-    list << "one" << "two" << "three" << "four";
+    foreach (fs_category category, Appcore::Get_Categories()) {
+        list << category.GetName();
+    }
+    //list << "one" << "two" << "three" << "four";
     model_categories.setStringList(list);
 
-    Appcore appcore;
     engine.rootContext()->setContextProperty("appcore", &appcore);
     engine.rootContext()->setContextProperty("model_categories", &model_categories);
     engine.rootContext()->setContextProperty("model_xslts", &model_xslts);

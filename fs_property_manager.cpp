@@ -5,6 +5,7 @@
 
 QString fs_property_manager::GetPropertyValue(QString path, QString pname)
 {
+    QString oppositepname = pname == "Name" ? "Description" : "Name";
     QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
@@ -13,12 +14,31 @@ QString fs_property_manager::GetPropertyValue(QString path, QString pname)
         }
 
         QString line = "";
+        QString linebuffer = "";
         QTextStream in(&file);
-        while (!in.atEnd() && !line.contains(pname + ": ")) {
+
+        while (!in.atEnd() && !line.contains(pname + ":")) {
              line = in.readLine();
         }
+
+        while (!in.atEnd()) {
+            linebuffer = in.readLine();
+            if(!linebuffer.contains(oppositepname + ":"))
+            {
+                if(linebuffer.contains("#"))
+                {
+                    linebuffer = linebuffer.mid(0, linebuffer.indexOf("#"));
+                }
+                line += linebuffer;
+            }
+            else
+            {
+                break;
+            }
+        }
+
         file.close();
-        return line.sliced(line.lastIndexOf(pname + ": ") + pname.length() + 2);
+        return line.sliced(line.lastIndexOf(pname + ": ") + pname.length() + 2).trimmed();
 }
 QString fs_property_manager::GetFileName(QString path)
 {

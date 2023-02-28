@@ -1,4 +1,9 @@
 #include "appcore.h"
+#include "xslt_processor.h"
+#include "fs_property_manager.h"
+#include "io_shape.h"
+
+QVector<fs_category> Appcore::categories = QVector<fs_category>();
 
 QString removeExt(QString str)
 {
@@ -28,7 +33,7 @@ int SwitchString(QString str)
 
 }
 
-QVector <fs_category> Appcore::ReadCategories()
+void Appcore::ReadCategories()
 {
     QString  lastdir = ".";
     QString itdir = ".";
@@ -74,7 +79,7 @@ QVector <fs_category> Appcore::ReadCategories()
             }
 
             categories.last().SetXslts(category_xslts);
-            categories.last().Debug_DisplayCategory();
+            //categories.last().Debug_DisplayCategory();
 
             lastdir = itdir;
             file_paths.clear();
@@ -98,7 +103,7 @@ QVector <fs_category> Appcore::ReadCategories()
 
         }
     }
-    return categories;
+    Appcore::categories = categories;
 }
 
 Appcore::Appcore(QObject *parent) : QObject(parent) { }
@@ -143,3 +148,63 @@ void Appcore::clearLog(bool isAutoClearing)
     if (isAutoClearing) qWarning(clr()) << "Лог был автоматически очищен программой";
     else qWarning(clr()) << "Лог был чищен пользователем";
 }
+QVector<fs_category> Appcore::Get_Categories()
+{
+    if(!categories.isEmpty())
+    {
+        return categories;
+    }
+    else
+    {
+        ReadCategories();
+        return categories;
+    }
+
+}
+
+int Appcore::GetCategoryByName(QVector<fs_category> categories, QString name)
+{
+    for(int i = 0; i < categories.count(); i++)
+    {
+        if(categories.at(i).GetName() == name)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int Appcore::getCombo1_Index()
+{
+    return this->SelectedIndex_combo1;
+}
+
+int Appcore::getCombo2_Index()
+{
+    return this->SelectedIndex_combo2;
+}
+
+void Appcore::setCombo1_Index(QVariant val)
+{
+    this->SelectedIndex_combo1 = val.toInt();
+}
+
+void Appcore::setCombo2_Index(QVariant val)
+{
+    this->SelectedIndex_combo2 = val.toInt();
+}
+
+QVariant Appcore::getCurrentCategoryDescription()
+{
+    return this->categories.at(this->getCombo1_Index()).GetDescription();
+}
+QVariant Appcore::getCurrentXSLTDescription()
+{
+    return this->categories.at(this->getCombo1_Index()).GetXslts().at(this->getCombo2_Index()).GetDesc();
+}
+
+QString Appcore::getCurrentXSLTPath()
+{
+    return this->categories.at(this->getCombo1_Index()).GetPath() + categories.at(this->getCombo1_Index()).GetXslts().at(this->getCombo2_Index()).GetRName();
+}
+

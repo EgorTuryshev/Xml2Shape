@@ -137,14 +137,17 @@ ApplicationWindow
             anchors.left: border.left
             anchors.leftMargin: 15
             anchors.topMargin: 50
-            width: 200
+            width: 205
             textRole: "display"
             //["Категория не выбрана"]
             model: model_categories
             onCurrentTextChanged:
             {
-                model.display = currentText
-                generator.generate(currentText)
+                xsltCombo.currentIndex = 0;
+                appcore.setCombo1_Index(currentIndex);
+                model.display = currentText;
+                generator.generate(currentText);
+                categoryDesc.text = appcore.getCurrentCategoryDescription();
             }
         }
 
@@ -155,28 +158,34 @@ ApplicationWindow
             anchors.left: categoryCombo.right
             anchors.leftMargin: 5
             anchors.topMargin: 50
-            width: 200  
+            width: 205
             model: model_xslts
             textRole: "display"
+            onCurrentTextChanged:
+            {
+                appcore.setCombo2_Index(currentIndex);
+                xsltDesc.text = appcore.getCurrentXSLTDescription();
+            }
         }
-
-        /*Label
-        {
-            anchors.top: categoryHeader.bottom
-            anchors.left: categoryHeader.left
-            anchors.topMargin: 5
-            width: 50
-            wrapMode: Text.WordWrap
-            text: "Пример длииииииииииииииииииииииииииииииииииииииииииииииинного описания категории"
-        }*/
 
         UI_DescriptionBox
         {
+            id: categoryDesc
             anchors.top: categoryCombo.bottom
             anchors.left: categoryCombo.left
             anchors.topMargin: 25
-            headertext: "Недлинный ёмкий текст"
-            text: "Тут может быть любой осмысленный текст с длиной слова в разумных пределах. Конечно, любой желаемый текст сюда не поместится, однако можно очень хорошо описать категорию. А, чуть не забыл, поддерживаются все стандартные <b>html - тэги</b>. <h3>Можно даже заголовками писать</h3> Ну или <p>Сменить абзац</p><i><font color=\"red\"> Не забудьте покреативить со свойствами тэгов</font></i>"
+            headertext: "Описание категории"
+            text: ""
+        }
+
+        UI_DescriptionBox
+        {
+            id: xsltDesc
+            anchors.top: xsltCombo.bottom
+            anchors.left: xsltCombo.left
+            anchors.topMargin: 25
+            headertext: "Описание шаблона"
+            text: "Пусто"
         }
 
         ProgressBar
@@ -206,7 +215,13 @@ ApplicationWindow
         Material.background: Material.accentColor
         Material.foreground: "#ffffff"
         font.pixelSize: 14
+        contentWidth: parent.width
 
+        Menu
+        {
+            id: headmenu
+            title: "ГБУ ТФИ РК"
+        }
         Menu
         {
             title: "Файл"
@@ -214,7 +229,7 @@ ApplicationWindow
             MenuBarItem
             {
                 id: themeSwitch
-                property var accents: [Material.Teal, Material.Purple, Material.Indigo, Material.Cyan, Material.DeepOrange];
+                property var accents: [Material.Teal, Material.Green, Material.Indigo, Material.Cyan, Material.DeepOrange, Material.Grey, Material.BlueGrey];
                 property int i: 0;
                 text: "Сменить тему"
                 onClicked:
@@ -230,6 +245,7 @@ ApplicationWindow
                     window.accent = accents[i];
                 }
             }
+            MenuSeparator { }
             MenuBarItem
             {
                 text: "Закрыть"
@@ -249,13 +265,6 @@ ApplicationWindow
                     appcore.openLog();
                 }
             }
-            MenuBarItem
-            {
-                text: "Очистить лог"
-                onClicked: {
-                    appcore.clearLog();
-                }
-            }
             CheckBox
             {
                 id: autoClear
@@ -265,6 +274,14 @@ ApplicationWindow
                 onCheckedChanged:
                 {
                    appcore.autoClearingLogChanged(checked);
+                }
+            }
+            MenuSeparator { }
+            MenuBarItem
+            {
+                text: "Очистить лог"
+                onClicked: {
+                    appcore.clearLog();
                 }
             }
         }
@@ -290,6 +307,11 @@ ApplicationWindow
             {
                 text: "Инвертировать X и Y"
             }
+        }
+        delegate: MenuBarItem
+        {
+            id: menuBarEmptyItem
+            enabled: text !== headmenu.title
         }
     }
 }

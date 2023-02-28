@@ -1,7 +1,6 @@
 #include "xslt_processor.h"
 #include <QFile>
 #include <QtXmlDepends>
-#include "loggingcategories.h"
 
 QString xslt_processor::cwd = "";
 

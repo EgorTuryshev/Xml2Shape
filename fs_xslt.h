@@ -10,9 +10,9 @@ class fs_xslt
 {
 public:
     fs_xslt(QString  pname, QString  rname, QString  description);
-    QString GetPName();
-    QString GetRName();
-    QString GetDesc();
+    QString GetPName() const;
+    QString GetRName() const;
+    QString GetDesc() const;
 private:
     QString  _propname;
     QString  _realname;

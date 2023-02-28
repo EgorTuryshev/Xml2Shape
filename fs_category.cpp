@@ -7,17 +7,21 @@ fs_category::fs_category(QString  name, QString  path, QString description)
     this->_path = path;
     this->_description = description;
 }
-QString  fs_category::GetName()
+QString  fs_category::GetName() const
 {
     return this->_name;
 }
-QString  fs_category::GetPath()
+QString  fs_category::GetPath() const
 {
     return this->_path;
 }
-QVector<fs_xslt> fs_category::GetXslts()
+QVector<fs_xslt> fs_category::GetXslts() const
 {
     return this->_xslts;
+}
+QString  fs_category::GetDescription() const
+{
+    return this->_description;
 }
 void fs_category::PushXslt(fs_xslt xslt)
 {
