@@ -122,10 +122,10 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
         targetPath = targetPath.remove(0, 8);
     }
 
-    qDebug(logDebug()) << xmlFilePath << " " << xslFilePath;
+    //qDebug(logDebug()) << xmlFilePath << " " << xslFilePath;
 
     QString filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName(); // TO-DO: Доработать, чтобы имя было уникальным для директории
-    qDebug(logDebug()) << filePath;
+    //qDebug(logDebug()) << filePath;
     xslt_processor::setcwd("");
     QString processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
     xml_parser::setXML(processedXML_str);
@@ -203,8 +203,8 @@ QVariant Appcore::getCurrentXSLTDescription()
     return this->categories.at(this->getCombo1_Index()).GetXslts().at(this->getCombo2_Index()).GetDesc();
 }
 
-QString Appcore::getCurrentXSLTPath()
+QString Appcore::getCurrentXSLTPath() // TO-DO: добавить проверку на наличие XSL-файла (?)
 {
-    return this->categories.at(this->getCombo1_Index()).GetPath() + categories.at(this->getCombo1_Index()).GetXslts().at(this->getCombo2_Index()).GetRName();
+    return removeExt(this->categories.at(this->getCombo1_Index()).GetPath() + categories.at(this->getCombo1_Index()).GetXslts().at(this->getCombo2_Index()).GetRName()) + ".xsl"; // TO-DO: оптимизировать
 }
 
