@@ -86,7 +86,6 @@ ApplicationWindow
             onClicked: {
                 folderDialog.open();
                 pBar.visible = true;
-                appcore.test();
             }
         }
 
@@ -96,9 +95,11 @@ ApplicationWindow
             acceptLabel: "Выбрать"
 
             onAccepted: {
+                console.log(appcore.getCurrentXSLTPath());
                 for (var i = 0; i < selectXMLBtn.filePaths.length; i++)
                 {
-                    appcore.test(selectXMLBtn.filePaths[i], "../Xml2Shape/samples/kpt.xsl", folderDialog.selectedFolder); // TO-DO: переделать, это тест
+                    //appcore.test(selectXMLBtn.filePaths[i], "../Xml2Shape/samples/kpt.xsl", folderDialog.selectedFolder); // TO-DO: переделать, это тест
+                    appcore.test(selectXMLBtn.filePaths[i], appcore.getCurrentXSLTPath(), folderDialog.selectedFolder);
                 }
                 pBar.visible = false;
             }

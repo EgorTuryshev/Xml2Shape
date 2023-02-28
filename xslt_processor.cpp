@@ -10,7 +10,7 @@ QString xslt_processor::processXSLT(QString xmlPath, QString xsltPath)
     QStringList params;
     QFileInfo xmlInfo (xslt_processor::cwd + xmlPath); // ?
     QFileInfo xsltInfo (xslt_processor::cwd + xsltPath); // ?
-    QString program = "../Xml2Shape/xslt_processor_app/xslt_processor.exe";
+    QString program = "../Xml2Shape/xslt_processor_app/xslt_processor.exe"; // TO-DO: перед релизом изменить путь
     params << xmlInfo.absoluteFilePath() << xsltInfo.absoluteFilePath();
     p.start(program, params);
     p.waitForFinished();
