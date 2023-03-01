@@ -61,9 +61,15 @@ QString getUniqueFilePath(QString filePath, int i = 1) // CHECK: Я не уве�
 
 IO_Shape::IO_Shape(){}
 
-void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath)
+void IO_Shape::WriteShape()
 {
-    Geometry::SetSmartReverse(true);
+    Geometry::SetShapeFile("test_poligons");
+
+}
+
+void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath, bool isInvertXY, bool isAutoDirtyFix)
+{
+    Geometry::SetSmartReverse(isAutoDirtyFix); // TO-DO: Привязать к чек-боксу
     QString uniqueFilePath = getUniqueFilePath(filePath);
     char *filePathC = (char*)malloc(uniqueFilePath.length() + 1);
     strcpy(filePathC, uniqueFilePath.toStdString().c_str()); // TO-DO: Можно в будущем изменить на более безопасную функцию
@@ -88,7 +94,15 @@ void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Featur
             for (int k = 0; k < coordinates.count(); k++)
             {
                 Coordinate currCoordinate = coordinates.at(k);
-                polygon.PointPush(currCoordinate.getX(), currCoordinate.getY());
+
+                if (isInvertXY)
+                {
+                    polygon.PointPush(currCoordinate.getY(), currCoordinate.getX());
+                }
+                else
+                {
+                    polygon.PointPush(currCoordinate.getX(), currCoordinate.getY());
+                }
             }
             QVector<GeometryObject> holes = currShell.getHoles();
             for (int k = 0; k < holes.count(); k++)
@@ -99,7 +113,14 @@ void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Featur
                 for (int l = 0; l < currHole.count(); l++)
                 {
                     Coordinate currHoleCoordinate = currHole.at(l);
-                    polygon.PointPush(currHoleCoordinate.getX(), currHoleCoordinate.getY());
+                    if (isInvertXY)
+                    {
+                        polygon.PointPush(currHoleCoordinate.getY(), currHoleCoordinate.getX());
+                    }
+                    else
+                    {
+                        polygon.PointPush(currHoleCoordinate.getX(), currHoleCoordinate.getY());
+                    }
                 }
 
                 polygon.EndHole();

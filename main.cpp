@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     QStringListModel model_categories, model_xslts;
-    Appcore appcore;
+    Appcore appcore(&model_categories);
     Model_Generator generator(&model_xslts, &appcore);
     const QUrl url(u"qrc:/Xml2Shape/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
@@ -60,14 +60,16 @@ int main(int argc, char *argv[])
     m_logFile.data()->open(QFile::Append | QFile::Text);
     qInstallMessageHandler(messageHandler);
 
-    appcore.ReadCategories();
+    appcore.refreshCategories();
+
+    /*appcore.ReadCategories();
 
     QStringList list;
     foreach (fs_category category, Appcore::Get_Categories()) {
         list << category.GetName();
     }
     //list << "one" << "two" << "three" << "four";
-    model_categories.setStringList(list);
+    model_categories.setStringList(list);*/
 
     engine.rootContext()->setContextProperty("appcore", &appcore);
     engine.rootContext()->setContextProperty("model_categories", &model_categories);

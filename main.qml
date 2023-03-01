@@ -43,6 +43,7 @@ ApplicationWindow
             property alias i: themeSwitch.i
             property alias isAutoClear: autoClear.checked
             property alias autoDirtyFix: autoDirtyFix.checked
+            property alias invertXY: invertXY.checked
     }
 
     Item{
@@ -293,6 +294,10 @@ ApplicationWindow
             MenuBarItem
             {
                 text: "Обновить категории"
+
+                onClicked: {
+                    appcore.refreshCategories();
+                }
             }
             MenuBarItem
             {
@@ -302,11 +307,22 @@ ApplicationWindow
             {
                 id: autoDirtyFix
                 checked: true
-                text: "Автоисправление грязных полигонов"
+                text: "Коррекция полигонов"
+
+                onCheckedChanged:
+                {
+                   appcore.autoDirtyFixChanged(checked);
+                }
             }
             CheckBox
             {
+                id: invertXY
                 text: "Инвертировать X и Y"
+
+                onCheckedChanged:
+                {
+                   appcore.invertXYChanged(checked);
+                }
             }
         }
         delegate: MenuBarItem
