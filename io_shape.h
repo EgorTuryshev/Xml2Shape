@@ -10,7 +10,7 @@ class IO_Shape
 public:
     IO_Shape();
     void WriteShape();
-    void WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath = "test");
+    void WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath = "test", bool isInvertXY = false, bool isAutoDirtyFix = true);
     static const char* typeStr(int type);
 private:
     static int SwitchString(QString str);

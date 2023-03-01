@@ -106,9 +106,13 @@ void Appcore::ReadCategories()
     Appcore::categories = categories;
 }
 
-Appcore::Appcore(QObject *parent) : QObject(parent) { }
+Appcore::Appcore(QStringListModel * model_categories, QObject *parent) : m_model_categories(model_categories), QObject(parent)
+{
 
-void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath){
+}
+
+void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
+{
     if (xmlFilePath.first(8) == "file:///")
     {
         xmlFilePath = xmlFilePath.remove(0, 8);
@@ -134,8 +138,19 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
     QVector<Feature> features = xml_parser::readFeautures();
 
     IO_Shape s;
-    s.WriteShape(featureType, header, features, filePath);
+    s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
 
+}
+
+void Appcore::refreshCategories()
+{
+    this->ReadCategories();
+
+    QStringList list;
+    foreach (fs_category category, Appcore::Get_Categories()) {
+        list << category.GetName();
+    }
+    this->m_model_categories->setStringList(list);
 }
 void Appcore::openLog()
 {
@@ -206,5 +221,15 @@ QVariant Appcore::getCurrentXSLTDescription()
 QString Appcore::getCurrentXSLTPath() // TO-DO: добавить проверку на наличие XSL-файла (?)
 {
     return removeExt(this->categories.at(this->getCombo1_Index()).GetPath() + categories.at(this->getCombo1_Index()).GetXslts().at(this->getCombo2_Index()).GetRName()) + ".xsl"; // TO-DO: оптимизировать
+}
+
+void Appcore::invertXYChanged(bool isInvertXY)
+{
+    this->isInvertXY = isInvertXY;
+}
+
+void Appcore::autoDirtyFixChanged(bool isAutoDirtyFix)
+{
+    this->isAutoDirtyFix = isAutoDirtyFix;
 }
 
