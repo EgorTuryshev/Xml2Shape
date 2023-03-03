@@ -127,7 +127,7 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
         targetPath = targetPath.remove(0, 8);
     }
 
-    QString processedXML_str;
+    QString processedXML_str, filePath;
     xslt_processor::setcwd("");
     QFileInfo xmlFileInfo(xmlFilePath);
     if (xmlFileInfo.suffix() == "zip")
@@ -157,15 +157,8 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
 
                         xslt_processor::setcwd("");
                         processedXML_str = xslt_processor::processXSLT(tempFile.fileName(), xslFilePath);
-                        QString filePath = targetPath + "/" + QFileInfo(tempFile).completeBaseName();
+                        filePath = targetPath + "/" + QFileInfo(tempFile).completeBaseName();
                         tempFile.remove();
-                        xml_parser::setXML(processedXML_str);
-                        QString featureType = xml_parser::readFeatureType();
-                        xml_header header = xml_parser::readTypeHeader();
-                        QVector<Feature> features = xml_parser::readFeautures();
-
-                        IO_Shape s;
-                        s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
                     }
                 }
             }
@@ -174,15 +167,16 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
     else
     {
         processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
-        QString filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName();
-        xml_parser::setXML(processedXML_str);
-        QString featureType = xml_parser::readFeatureType();
-        xml_header header = xml_parser::readTypeHeader();
-        QVector<Feature> features = xml_parser::readFeautures();
-
-        IO_Shape s;
-        s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
+        filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName();
     }
+
+    xml_parser::setXML(processedXML_str);
+    QString featureType = xml_parser::readFeatureType();
+    xml_header header = xml_parser::readTypeHeader();
+    QVector<Feature> features = xml_parser::readFeautures();
+
+    IO_Shape s;
+    s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
 }
 
 void Appcore::refreshCategories()
