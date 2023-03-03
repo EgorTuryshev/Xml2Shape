@@ -85,8 +85,8 @@ ApplicationWindow
             anchors.bottomMargin: 50
             text: "Записать ShapeFile"
             onClicked: {
-                folderDialog.open();
                 pBar.visible = true;
+                folderDialog.open();
             }
         }
 
@@ -96,12 +96,13 @@ ApplicationWindow
             acceptLabel: "Выбрать"
 
             onAccepted: {
-                console.log(appcore.getCurrentXSLTPath());
                 for (var i = 0; i < selectXMLBtn.filePaths.length; i++)
                 {
-                    //appcore.test(selectXMLBtn.filePaths[i], "../Xml2Shape/samples/kpt.xsl", folderDialog.selectedFolder);
                     appcore.test(selectXMLBtn.filePaths[i], appcore.getCurrentXSLTPath(), folderDialog.selectedFolder);
                 }
+                pBar.visible = false;
+            }
+            onRejected: {
                 pBar.visible = false;
             }
         }
