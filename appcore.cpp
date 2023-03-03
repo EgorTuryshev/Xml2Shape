@@ -1,3 +1,4 @@
+#include <QtGui/private/qzipreader_p.h>
 #include "appcore.h"
 #include "xslt_processor.h"
 #include "fs_property_manager.h"
@@ -111,7 +112,7 @@ Appcore::Appcore(QStringListModel * model_categories, QObject *parent) : m_model
 
 }
 
-void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
+void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath) // TO-DO: Переименовать метод
 {
     if (xmlFilePath.first(8) == "file:///")
     {
@@ -126,20 +127,62 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
         targetPath = targetPath.remove(0, 8);
     }
 
-    //qDebug(logDebug()) << xmlFilePath << " " << xslFilePath;
-
-    QString filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName(); // TO-DO: Доработать, чтобы имя было уникальным для директории
-    //qDebug(logDebug()) << filePath;
+    QString processedXML_str;
     xslt_processor::setcwd("");
-    QString processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
-    xml_parser::setXML(processedXML_str);
-    QString featureType = xml_parser::readFeatureType();
-    xml_header header = xml_parser::readTypeHeader();
-    QVector<Feature> features = xml_parser::readFeautures();
+    QFileInfo xmlFileInfo(xmlFilePath);
+    if (xmlFileInfo.suffix() == "zip")
+    {
+        QZipReader zip_reader(xmlFilePath);
+        if (zip_reader.exists())
+        {
+            foreach (QZipReader::FileInfo info, zip_reader.fileInfoList())
+            {
+                if (info.isFile) // CHECK: Нужна ли эта проверка?
+                {
+                    QFileInfo currFileInfo(info.filePath);
+                    // CHECK: Нужно ли вообще проверять каждый файл по отдельности, или лучше сразу использовать метод
+                    // .extractAll()?
+                    if (currFileInfo.suffix() == "xml")
+                    {
+                        QByteArray fileData = zip_reader.fileData(info.filePath); // ?
+                        QString fileDataStr(fileData);
+                        QFile tempFile("./temp/" + currFileInfo.fileName()); // ?
 
-    IO_Shape s;
-    s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
+                        if (tempFile.open(QIODevice::WriteOnly | QIODevice::Text))
+                        {
+                            QTextStream writeStream(&tempFile);
+                            writeStream << fileDataStr; // CHECK: Можно ли сразу записывать QByteArray?
+                        }
+                        tempFile.close();
 
+                        xslt_processor::setcwd("");
+                        processedXML_str = xslt_processor::processXSLT(tempFile.fileName(), xslFilePath);
+                        QString filePath = targetPath + "/" + QFileInfo(tempFile).completeBaseName();
+                        tempFile.remove();
+                        xml_parser::setXML(processedXML_str);
+                        QString featureType = xml_parser::readFeatureType();
+                        xml_header header = xml_parser::readTypeHeader();
+                        QVector<Feature> features = xml_parser::readFeautures();
+
+                        IO_Shape s;
+                        s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
+        QString filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName();
+        xml_parser::setXML(processedXML_str);
+        QString featureType = xml_parser::readFeatureType();
+        xml_header header = xml_parser::readTypeHeader();
+        QVector<Feature> features = xml_parser::readFeautures();
+
+        IO_Shape s;
+        s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
+    }
 }
 
 void Appcore::refreshCategories()

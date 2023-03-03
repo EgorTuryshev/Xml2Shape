@@ -1,7 +1,8 @@
 QT += \
     quick \
     xml \
-    qml
+    qml \
+    gui-private
 
 HEADERS += \
     appcore.h \
