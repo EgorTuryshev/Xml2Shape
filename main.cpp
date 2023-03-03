@@ -16,7 +16,7 @@ QScopedPointer<QFile>   m_logFile;
 
 void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    if(QString::compare(context.category, "ClearLog") == 0)
+    if (QString::compare(context.category, "ClearLog") == 0)
     {
         m_logFile->remove();
         QFile log("logFile.txt");

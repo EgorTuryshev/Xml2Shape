@@ -99,7 +99,7 @@ ApplicationWindow
                 console.log(appcore.getCurrentXSLTPath());
                 for (var i = 0; i < selectXMLBtn.filePaths.length; i++)
                 {
-                    //appcore.test(selectXMLBtn.filePaths[i], "../Xml2Shape/samples/kpt.xsl", folderDialog.selectedFolder); // TO-DO: переделать, это тест
+                    //appcore.test(selectXMLBtn.filePaths[i], "../Xml2Shape/samples/kpt.xsl", folderDialog.selectedFolder);
                     appcore.test(selectXMLBtn.filePaths[i], appcore.getCurrentXSLTPath(), folderDialog.selectedFolder);
                 }
                 pBar.visible = false;
@@ -123,7 +123,7 @@ ApplicationWindow
 
         FileDialog {
             id: xmlFileDialog
-            nameFilters: ["XML files (*.xml)"]
+            nameFilters: ["XML files (*.xml)", "ZIP archives (*.zip)"]
             currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // TO-DO: Изменить
             acceptLabel: "Выбрать"
             fileMode: FileDialog.OpenFiles
