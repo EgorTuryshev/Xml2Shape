@@ -37,7 +37,7 @@ Rectangle
                 when: root.text.length > 20
                 PropertyChanges {
                     target: border
-                    width: 205
+                    width: parent.width
                     height: text_field.paintedHeight + 5
                 }
             },
