@@ -2,7 +2,8 @@ QT += \
     quick \
     xml \
     qml \
-    gui-private
+    gui-private \
+    concurrent
 
 HEADERS += \
     appcore.h \

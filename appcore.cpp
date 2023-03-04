@@ -1,4 +1,5 @@
 #include <QtGui/private/qzipreader_p.h>
+#include <QtConcurrent>
 #include "appcore.h"
 #include "xslt_processor.h"
 #include "fs_property_manager.h"
@@ -127,15 +128,14 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
         targetPath = targetPath.remove(0, 8);
     }
 
-    QString processedXML_str, filePath;
-    xslt_processor::setcwd("");
     QFileInfo xmlFileInfo(xmlFilePath);
     if (xmlFileInfo.suffix() == "zip")
     {
         QZipReader zip_reader(xmlFilePath);
         if (zip_reader.exists())
         {
-            foreach (QZipReader::FileInfo info, zip_reader.fileInfoList())
+            // Ниже представлен медленный способ
+            /*foreach (QZipReader::FileInfo info, zip_reader.fileInfoList())
             {
                 if (info.isFile) // CHECK: Нужна ли эта проверка?
                 {
@@ -145,7 +145,9 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
                     if (currFileInfo.suffix() == "xml")
                     {
                         QByteArray fileData = zip_reader.fileData(info.filePath); // ?
+                        qDebug() << "Считаны данные файла";
                         QString fileDataStr(fileData);
+                        qDebug() << "Данные файла переведены в строку";
                         QFile tempFile("./temp/" + currFileInfo.fileName()); // ?
 
                         if (tempFile.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -154,29 +156,47 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
                             writeStream << fileDataStr; // CHECK: Можно ли сразу записывать QByteArray?
                         }
                         tempFile.close();
+                        qDebug() << "Данные файла записаны во временный файл";
 
-                        xslt_processor::setcwd("");
-                        processedXML_str = xslt_processor::processXSLT(tempFile.fileName(), xslFilePath);
-                        filePath = targetPath + "/" + QFileInfo(tempFile).completeBaseName();
+                        QFileInfo tempFileInfo(tempFile);
+                        this->test(tempFileInfo.absoluteFilePath(), xslFilePath, targetPath);
+
                         tempFile.remove();
+                        qDebug() << "Временный файл удален";
                     }
                 }
+            }*/
+
+            zip_reader.extractAll("./temp");
+            QDir tempDir("./temp");
+            tempDir.setFilter(QDir::Files);
+            QFileInfoList files(tempDir.entryInfoList());
+            foreach (QFileInfo fileInfo, files)
+            {
+                if (fileInfo.suffix() == "xml")
+                {
+                    this->test(fileInfo.absoluteFilePath(), xslFilePath, targetPath);
+                }
+
+                QFile::remove(fileInfo.absoluteFilePath());
+                //std::filesystem::remove(fileInfo.absoluteFilePath().toStdString());
             }
+
         }
     }
     else
     {
-        processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
-        filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName();
+        xslt_processor::setcwd("");
+        QString processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
+        QString filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName();
+        xml_parser::setXML(processedXML_str);
+        QString featureType = xml_parser::readFeatureType();
+        xml_header header = xml_parser::readTypeHeader();
+        QVector<Feature> features = xml_parser::readFeautures();
+
+        IO_Shape s;
+        s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
     }
-
-    xml_parser::setXML(processedXML_str);
-    QString featureType = xml_parser::readFeatureType();
-    xml_header header = xml_parser::readTypeHeader();
-    QVector<Feature> features = xml_parser::readFeautures();
-
-    IO_Shape s;
-    s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
 }
 
 void Appcore::refreshCategories()
