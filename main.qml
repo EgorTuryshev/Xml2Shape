@@ -24,6 +24,7 @@ ApplicationWindow
     }
 
     property int accent: Material.Teal
+    property bool isRightMenuActive: true;
 
     width: 1000
     height: 600
@@ -50,237 +51,437 @@ ApplicationWindow
 
         anchors.fill: parent
 
-        Rectangle
+        Item
         {
-            id: leftBorder
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.leftMargin: 20
-            width: 450
-            anchors.topMargin: 50
-            anchors.bottomMargin: 20
-            antialiasing: true
-            border.color: "black"
-            border.width: 0
-            radius: 40
-        }
+            anchors.fill: parent
+            id: leftGroup
+            z: 0
+            Rectangle
+            {
+                id: leftBorder
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.leftMargin: 20
+                width: 450
+                anchors.topMargin: 50
+                anchors.bottomMargin: 20
+                antialiasing: true
+                border.color: "black"
+                border.width: 0
+                radius: 40
 
-        DropShadow
-        {
-            anchors.fill: leftBorder
-            horizontalOffset: 1
-            verticalOffset: 5
-            radius: 40
-            samples: 100
-            color: "grey"
-            spread: 0
-            source: leftBorder
-        }
-
-        Rectangle
-        {
-            id: rightBorder
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.rightMargin: 20
-            width: 600
-            anchors.topMargin: 50
-            anchors.bottomMargin: 20
-            antialiasing: true
-            border.color: "black"
-            border.width: 0
-            radius: 40
-        }
-
-        DropShadow
-        {
-            anchors.fill: rightBorder
-            horizontalOffset: 1
-            verticalOffset: 5
-            radius: 40
-            samples: 100
-            color: "grey"
-            spread: 0
-            source: rightBorder
-        }
-
-        FolderDialog {
-            id: folderDialog
-            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // TO-DO: Изменить
-            acceptLabel: "Выбрать"
-
-            onAccepted: {
-                for (var i = 0; i < selectXMLBtn.filePaths.length; i++)
+                ParallelAnimation
                 {
-                    appcore.test(selectXMLBtn.filePaths[i], appcore.getCurrentXSLTPath(), folderDialog.selectedFolder);
+                    id: leftSlideOutAnimation
+                    NumberAnimation
+                    {
+                        id: leftSlideOutTargets
+                        targets: [categoryCombo, xsltCombo, categoryDesc, xsltDesc]
+                        property: "opacity"
+                        duration: 400
+                        to: 0
+                        easing.type: Easing.InOutQuad
+                    }
+                    SequentialAnimation
+                    {
+                        PauseAnimation
+                        {
+                            duration: 350
+                        }
+                        NumberAnimation
+                        {
+                            target: leftGroup
+                            property: "z"
+                            duration: 0
+                            to: 0
+                        }
+                    }
                 }
-                pBar.visible = false;
+                ParallelAnimation
+                {
+                    id: leftSlideInAnimation
+                    NumberAnimation
+                    {
+                        targets: leftSlideOutTargets.targets
+                        property: "opacity"
+                        duration: 400
+                        to: 1
+                        easing.type: Easing.InOutQuad
+                    }
+                    NumberAnimation
+                    {
+                        target: leftBorder
+                        property: "width"
+                        duration: 400
+                        to: window.width - 100
+                        easing.type: Easing.InOutQuad
+                    }
+                    SequentialAnimation
+                    {
+
+                        PauseAnimation
+                        {
+                            duration: 350
+                        }
+                        NumberAnimation
+                        {
+                            target: leftGroup
+                            property: "z"
+                            duration: 0
+                            to: 100
+                        }
+                    }
+                }
             }
-            onRejected: {
-                pBar.visible = false;
-            }
-        }
 
-        UI_Button
-        {
-            id: selectXMLBtn
-            property var filePaths: []
-
-            anchors.bottom: rightBorder.bottom
-            anchors.left: rightBorder.left
-            anchors.leftMargin: 15
-            anchors.bottomMargin: 50
-            text: "Выбрать КПТ-файл(ы)"
-            onClicked:{
-                xmlFileDialog.open();
-            }
-        }
-
-        UI_CheckItem
-        {
-            id: selectXMLMark
-            width: selectXMLBtn.height - 10
-            height: selectXMLBtn.height - 10
-            anchors.top: selectXMLBtn.top
-            anchors.left: selectXMLBtn.right
-            anchors.leftMargin: 5
-            anchors.topMargin: 5
-        }
-
-        UI_Button
-        {
-            id: writeBtn
-            anchors.bottom: rightBorder.bottom
-            anchors.left: selectXMLMark.right
-            anchors.leftMargin: 20
-            anchors.bottomMargin: 50
-            text: "Записать ShapeFile"
-            onClicked: {
-                pBar.visible = true;
-                folderDialog.open();
-            }
-        }
-
-        UI_CheckItem
-        {
-            id: writeBtnMark
-            width: writeBtn.height - 10
-            height: writeBtn.height - 10
-            anchors.top: writeBtn.top
-            anchors.left: writeBtn.right
-            anchors.leftMargin: 5
-            anchors.topMargin: 5
-        }
-
-        UI_Button
-        {
-            id: animTest
-            anchors.bottom: selectXMLBtn.top
-            anchors.left: selectXMLBtn.left
-            anchors.bottomMargin: 0
-            text: "ТЕСТ АНИМАЦИИ"
-            onClicked:
+            DropShadow
             {
-                cItem.switchState();
+                anchors.fill: leftBorder
+                horizontalOffset: 1
+                verticalOffset: 5
+                radius: 40
+                samples: 100
+                color: "grey"
+                spread: 0
+                source: leftBorder
             }
-        }
-
-        UI_CheckItem
-        {
-            id: cItem
-            width: animTest.height - 10
-            height: animTest.height - 10
-            anchors.bottom: writeBtn.top
-            anchors.left: animTest.right
-            anchors.leftMargin: 5
-            anchors.bottomMargin: 5
-        }
-
-        FileDialog {
-            id: xmlFileDialog
-            nameFilters: ["XML files (*.xml)", "ZIP archives (*.zip)"]
-            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // TO-DO: Изменить
-            acceptLabel: "Выбрать"
-            fileMode: FileDialog.OpenFiles
-            onAccepted: {
-                selectXMLBtn.filePaths = selectedFiles;
-            }
-        }
-
-        UI_Combo
-        {
-            id: categoryCombo
-            anchors.top: leftBorder.top
-            anchors.left: leftBorder.left
-            anchors.leftMargin: 15
-            anchors.topMargin: 25
-            width: 205
-            textRole: "display"
-            model: model_categories
-            onCurrentTextChanged:
+            UI_Combo
             {
-                xsltCombo.currentIndex = 0;
-                appcore.setCombo1_Index(currentIndex);
-                model.display = currentText;
-                generator.generate(currentText);
-                categoryDesc.text = appcore.getCurrentCategoryDescription();
+                id: categoryCombo
+                anchors.top: leftBorder.top
+                anchors.left: leftBorder.left
+                anchors.leftMargin: 15
+                anchors.topMargin: 25
+                width: 205
+                textRole: "display"
+                model: model_categories
+                opacity: 0
+                onCurrentTextChanged:
+                {
+                    xsltCombo.currentIndex = 0;
+                    appcore.setCombo1_Index(currentIndex);
+                    model.display = currentText;
+                    generator.generate(currentText);
+                    categoryDesc.text = appcore.getCurrentCategoryDescription();
+                }
             }
-        }
 
-        UI_Combo
-        {
-            id: xsltCombo
-            anchors.top: leftBorder.top
-            anchors.left: categoryCombo.right
-            anchors.leftMargin: 5
-            anchors.topMargin: categoryCombo.anchors.topMargin
-            width: 205
-            model: model_xslts
-            textRole: "display"
-            onCurrentTextChanged:
+            UI_Combo
             {
-                appcore.setCombo2_Index(currentIndex);
-                xsltDesc.text = appcore.getCurrentXSLTDescription();
+                id: xsltCombo
+                anchors.top: leftBorder.top
+                anchors.left: categoryCombo.right
+                anchors.leftMargin: 5
+                anchors.topMargin: categoryCombo.anchors.topMargin
+                width: 205
+                model: model_xslts
+                textRole: "display"
+                opacity: 0
+                onCurrentTextChanged:
+                {
+                    appcore.setCombo2_Index(currentIndex);
+                    xsltDesc.text = appcore.getCurrentXSLTDescription();
+                }
             }
+
+            UI_DescriptionBox
+            {
+                id: categoryDesc
+                anchors.top: categoryCombo.bottom
+                anchors.left: categoryCombo.left
+                anchors.topMargin: 25
+                width: 205
+                headertext: "Описание категории"
+                text: ""
+                opacity: 0
+            }
+
+            UI_DescriptionBox
+            {
+                id: xsltDesc
+                anchors.top: xsltCombo.bottom
+                anchors.left: xsltCombo.left
+                anchors.topMargin: 25
+                width: 205
+                headertext: "Описание шаблона"
+                text: "Пусто"
+                opacity: 0
+            }
+            UI_Button
+            {
+                id: leftSwitchMenuBtn
+                text:"<"
+                anchors.right: leftBorder.right
+                anchors.top: leftBorder.top
+                height: 50
+                width: 20
+                anchors.topMargin: leftBorder.height / 2 - height
+                onClicked:
+                {
+                    if(isRightMenuActive)
+                    {
+                        rightSlideOutAnimation.start();
+                        leftSlideInAnimation.start();
+                    }
+                    else
+                    {
+                        leftSlideOutAnimation.start();
+                        rightSlideInAnimation.start();
+                    }
+                    isRightMenuActive = !isRightMenuActive;
+                }
+            }
+
         }
 
-        UI_DescriptionBox
+        Item
         {
-            id: categoryDesc
-            anchors.top: categoryCombo.bottom
-            anchors.left: categoryCombo.left
-            anchors.topMargin: 25
-            width: 205
-            headertext: "Описание категории"
-            text: ""
-        }
+            id: rightGroup
+            anchors.fill: parent
+            z: 100
+            Rectangle
+            {
+                id: rightBorder
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.rightMargin: 20
+                width: window.width - 100
+                anchors.topMargin: 50
+                anchors.bottomMargin: 20
+                antialiasing: true
+                border.color: "black"
+                border.width: 0
+                radius: 40
+                ParallelAnimation
+                {
+                    id: rightSlideInAnimation
+                    NumberAnimation
+                    {
+                        target: rightBorder
+                        property: "width"
+                        duration: 400
+                        to: window.width - 100
+                        easing.type: Easing.InOutQuad
+                    }
+                    NumberAnimation
+                    {
+                        id: rightSlideOutTargets
+                        targets: [selectXMLBtn, writeBtn, instructionDesc, writeBtnMark, selectXMLMark, rightSwitchMenuBtn]
+                        property: "opacity"
+                        duration: 400
+                        to: 1
+                        easing.type: Easing.InOutQuad
+                    }
+                    SequentialAnimation
+                    {
 
-        UI_DescriptionBox
-        {
-            id: xsltDesc
-            anchors.top: xsltCombo.bottom
-            anchors.left: xsltCombo.left
-            anchors.topMargin: 25
-            width: 205
-            headertext: "Описание шаблона"
-            text: "Пусто"
-        }
+                        PauseAnimation
+                        {
+                            duration: 350
+                        }
+                        NumberAnimation
+                        {
+                            target: rightGroup
+                            property: "z"
+                            duration: 0
+                            to: 100
+                        }
+                    }
+                }
+                ParallelAnimation
+                {
+                    id: rightSlideOutAnimation
+                    NumberAnimation
+                    {
+                        target: rightBorder
+                        property: "width"
+                        duration: 400
+                        to: 600
+                        easing.type: Easing.InOutQuad
+                    }
+                    NumberAnimation
+                    {
+                        targets: rightSlideOutTargets.targets
+                        property: "opacity"
+                        duration: 400
+                        to: 0
+                        easing.type: Easing.InOutQuad
+                    }
+                    SequentialAnimation
+                    {
 
-        UI_DescriptionBox
-        {
-            id: instructionDesc
-            anchors.top: categoryCombo.top
-            anchors.left: selectXMLBtn.left
-            anchors.topMargin: 0
-            width: 400
-            headertext: "Порядок работы"
-            text: "
-            <h3>Тут будет краткое руководство пользователя</h3>
-            "
-        }
+                        PauseAnimation
+                        {
+                            duration: 350
+                        }
+                        NumberAnimation
+                        {
+                            target: rightGroup
+                            property: "z"
+                            duration: 0
+                            to: 0
+                        }
+                    }
+                }
+            }
 
+            DropShadow
+            {
+                anchors.fill: rightBorder
+                horizontalOffset: 1
+                verticalOffset: 5
+                radius: 40
+                samples: 100
+                color: "grey"
+                spread: 0
+                source: rightBorder
+            }
+
+            UI_Button
+            {
+                id: rightSwitchMenuBtn
+                text:">"
+                anchors.left: rightBorder.left
+                anchors.top: rightBorder.top
+                height: 50
+                width: 20
+                anchors.topMargin: rightBorder.height / 2 - height
+                onClicked:
+                {
+                    if(isRightMenuActive)
+                    {
+                        rightSlideOutAnimation.start();
+                        leftSlideInAnimation.start();
+                    }
+                    else
+                    {
+                        leftSlideOutAnimation.start();
+                        rightSlideInAnimation.start();
+                    }
+                    isRightMenuActive = !isRightMenuActive;
+                }
+            }
+
+            FolderDialog {
+                id: folderDialog
+                currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // TO-DO: Изменить
+                acceptLabel: "Выбрать"
+
+                onAccepted: {
+                    for (var i = 0; i < selectXMLBtn.filePaths.length; i++)
+                    {
+                        appcore.test(selectXMLBtn.filePaths[i], appcore.getCurrentXSLTPath(), folderDialog.selectedFolder);
+                    }
+                    pBar.visible = false;
+                }
+                onRejected: {
+                    pBar.visible = false;
+                }
+            }
+
+            UI_Button
+            {
+                id: selectXMLBtn
+                property var filePaths: []
+
+                anchors.bottom: rightBorder.bottom
+                anchors.left: rightBorder.left
+                anchors.leftMargin: 15
+                anchors.bottomMargin: 50
+                text: "Выбрать КПТ-файл(ы)"
+                onClicked:{
+                    xmlFileDialog.open();
+                }
+            }
+
+            UI_CheckItem
+            {
+                id: selectXMLMark
+                width: selectXMLBtn.height - 10
+                height: selectXMLBtn.height - 10
+                anchors.top: selectXMLBtn.top
+                anchors.left: selectXMLBtn.right
+                anchors.leftMargin: 5
+                anchors.topMargin: 5
+            }
+
+            UI_Button
+            {
+                id: writeBtn
+                anchors.bottom: rightBorder.bottom
+                anchors.left: selectXMLMark.right
+                anchors.leftMargin: 20
+                anchors.bottomMargin: 50
+                text: "Записать ShapeFile"
+                onClicked: {
+                    pBar.visible = true;
+                    folderDialog.open();
+                }
+            }
+
+            UI_CheckItem
+            {
+                id: writeBtnMark
+                width: writeBtn.height - 10
+                height: writeBtn.height - 10
+                anchors.top: writeBtn.top
+                anchors.left: writeBtn.right
+                anchors.leftMargin: 5
+                anchors.topMargin: 5
+            }
+
+            UI_Button
+            {
+                id: animTest
+                anchors.bottom: selectXMLBtn.top
+                anchors.left: selectXMLBtn.left
+                anchors.bottomMargin: 0
+                text: "ТЕСТ АНИМАЦИИ"
+                onClicked:
+                {
+                    cItem.switchState();
+                }
+            }
+
+            UI_CheckItem
+            {
+                id: cItem
+                width: animTest.height - 10
+                height: animTest.height - 10
+                anchors.bottom: writeBtn.top
+                anchors.left: animTest.right
+                anchors.leftMargin: 5
+                anchors.bottomMargin: 5
+            }
+
+            FileDialog {
+                id: xmlFileDialog
+                nameFilters: ["XML files (*.xml)", "ZIP archives (*.zip)"]
+                currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // TO-DO: Изменить
+                acceptLabel: "Выбрать"
+                fileMode: FileDialog.OpenFiles
+                onAccepted: {
+                    selectXMLBtn.filePaths = selectedFiles;
+                }
+            }
+
+            UI_DescriptionBox
+            {
+                id: instructionDesc
+                anchors.top: rightBorder.top
+                anchors.left: selectXMLBtn.left
+                anchors.topMargin: 25
+                width: 400
+                headertext: "Порядок работы"
+                text: "
+                <h3>Тут будет краткое руководство пользователя</h3>
+                "
+            }
+
+
+        }
         ProgressBar
         {
             id: pBar
