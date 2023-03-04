@@ -35,15 +35,15 @@ ApplicationWindow
     Settings
     {
         id: settings
-            property alias x: window.x
-            property alias y: window.y
-            property alias width: window.width
-            property alias height: window.height
-            property alias accent: window.accent
-            property alias i: themeSwitch.i
-            property alias isAutoClear: autoClear.checked
-            property alias autoDirtyFix: autoDirtyFix.checked
-            property alias invertXY: invertXY.checked
+        property alias x: window.x
+        property alias y: window.y
+        property alias width: window.width
+        property alias height: window.height
+        property alias accent: window.accent
+        property alias i: themeSwitch.i
+        property alias isAutoClear: autoClear.checked
+        property alias autoDirtyFix: autoDirtyFix.checked
+        property alias invertXY: invertXY.checked
     }
 
     Item{
@@ -52,12 +52,14 @@ ApplicationWindow
 
         Rectangle
         {
-            anchors.fill: parent
+            id: leftBorder
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
             anchors.leftMargin: 20
-            anchors.rightMargin: 20
+            width: 450
             anchors.topMargin: 50
             anchors.bottomMargin: 20
-            id: border
             antialiasing: true
             border.color: "black"
             border.width: 0
@@ -66,28 +68,42 @@ ApplicationWindow
 
         DropShadow
         {
-            anchors.fill: border
+            anchors.fill: leftBorder
             horizontalOffset: 1
             verticalOffset: 5
             radius: 40
             samples: 100
             color: "grey"
             spread: 0
-            source: border
+            source: leftBorder
         }
 
-        UI_Button
+        Rectangle
         {
-            id: writeBtn
-            anchors.bottom: border.bottom
-            anchors.right: border.right
+            id: rightBorder
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
             anchors.rightMargin: 20
-            anchors.bottomMargin: 50
-            text: "Записать ShapeFile"
-            onClicked: {
-                pBar.visible = true;
-                folderDialog.open();
-            }
+            width: 600
+            anchors.topMargin: 50
+            anchors.bottomMargin: 20
+            antialiasing: true
+            border.color: "black"
+            border.width: 0
+            radius: 40
+        }
+
+        DropShadow
+        {
+            anchors.fill: rightBorder
+            horizontalOffset: 1
+            verticalOffset: 5
+            radius: 40
+            samples: 100
+            color: "grey"
+            spread: 0
+            source: rightBorder
         }
 
         FolderDialog {
@@ -112,14 +128,74 @@ ApplicationWindow
             id: selectXMLBtn
             property var filePaths: []
 
-            anchors.bottom: border.bottom
-            anchors.right: writeBtn.left
-            anchors.rightMargin: 5
+            anchors.bottom: rightBorder.bottom
+            anchors.left: rightBorder.left
+            anchors.leftMargin: 15
             anchors.bottomMargin: 50
-            text: "Выбрать XML-файл(ы)"
+            text: "Выбрать КПТ-файл(ы)"
             onClicked:{
                 xmlFileDialog.open();
             }
+        }
+
+        UI_CheckItem
+        {
+            id: selectXMLMark
+            width: selectXMLBtn.height - 10
+            height: selectXMLBtn.height - 10
+            anchors.top: selectXMLBtn.top
+            anchors.left: selectXMLBtn.right
+            anchors.leftMargin: 5
+            anchors.topMargin: 5
+        }
+
+        UI_Button
+        {
+            id: writeBtn
+            anchors.bottom: rightBorder.bottom
+            anchors.left: selectXMLMark.right
+            anchors.leftMargin: 20
+            anchors.bottomMargin: 50
+            text: "Записать ShapeFile"
+            onClicked: {
+                pBar.visible = true;
+                folderDialog.open();
+            }
+        }
+
+        UI_CheckItem
+        {
+            id: writeBtnMark
+            width: writeBtn.height - 10
+            height: writeBtn.height - 10
+            anchors.top: writeBtn.top
+            anchors.left: writeBtn.right
+            anchors.leftMargin: 5
+            anchors.topMargin: 5
+        }
+
+        UI_Button
+        {
+            id: animTest
+            anchors.bottom: selectXMLBtn.top
+            anchors.left: selectXMLBtn.left
+            anchors.bottomMargin: 0
+            text: "ТЕСТ АНИМАЦИИ"
+            onClicked:
+            {
+                cItem.switchState();
+            }
+        }
+
+        UI_CheckItem
+        {
+            id: cItem
+            width: animTest.height - 10
+            height: animTest.height - 10
+            anchors.bottom: writeBtn.top
+            anchors.left: animTest.right
+            anchors.leftMargin: 5
+            anchors.bottomMargin: 5
         }
 
         FileDialog {
@@ -136,13 +212,12 @@ ApplicationWindow
         UI_Combo
         {
             id: categoryCombo
-            anchors.top: border.top
-            anchors.left: border.left
+            anchors.top: leftBorder.top
+            anchors.left: leftBorder.left
             anchors.leftMargin: 15
-            anchors.topMargin: 50
+            anchors.topMargin: 25
             width: 205
             textRole: "display"
-            //["Категория не выбрана"]
             model: model_categories
             onCurrentTextChanged:
             {
@@ -157,10 +232,10 @@ ApplicationWindow
         UI_Combo
         {
             id: xsltCombo
-            anchors.top: border.top
+            anchors.top: leftBorder.top
             anchors.left: categoryCombo.right
             anchors.leftMargin: 5
-            anchors.topMargin: 50
+            anchors.topMargin: categoryCombo.anchors.topMargin
             width: 205
             model: model_xslts
             textRole: "display"
@@ -177,6 +252,7 @@ ApplicationWindow
             anchors.top: categoryCombo.bottom
             anchors.left: categoryCombo.left
             anchors.topMargin: 25
+            width: 205
             headertext: "Описание категории"
             text: ""
         }
@@ -187,16 +263,30 @@ ApplicationWindow
             anchors.top: xsltCombo.bottom
             anchors.left: xsltCombo.left
             anchors.topMargin: 25
+            width: 205
             headertext: "Описание шаблона"
             text: "Пусто"
+        }
+
+        UI_DescriptionBox
+        {
+            id: instructionDesc
+            anchors.top: categoryCombo.top
+            anchors.left: selectXMLBtn.left
+            anchors.topMargin: 0
+            width: 400
+            headertext: "Порядок работы"
+            text: "
+            <h3>Тут будет краткое руководство пользователя</h3>
+            "
         }
 
         ProgressBar
         {
             id: pBar
-            anchors.bottom: border.bottom
-            anchors.left: border.left
-            anchors.right: border.right
+            anchors.bottom: leftBorder.bottom
+            anchors.left: leftBorder.left
+            anchors.right: leftBorder.right
             anchors.leftMargin: 30
             anchors.rightMargin: 30
             indeterminate: true
@@ -223,7 +313,7 @@ ApplicationWindow
         Menu
         {
             id: headmenu
-            title: "ГБУ ТФИ РК"
+            title: "ГБУ \"ТФИ РК\""
         }
         Menu
         {
@@ -239,7 +329,7 @@ ApplicationWindow
                 {
                     if (i < accents.length - 1)
                     {
-                       i++;
+                        i++;
                     }
                     else
                     {
@@ -276,7 +366,7 @@ ApplicationWindow
 
                 onCheckedChanged:
                 {
-                   appcore.autoClearingLogChanged(checked);
+                    appcore.autoClearingLogChanged(checked);
                 }
             }
             MenuSeparator { }
@@ -312,7 +402,7 @@ ApplicationWindow
 
                 onCheckedChanged:
                 {
-                   appcore.autoDirtyFixChanged(checked);
+                    appcore.autoDirtyFixChanged(checked);
                 }
             }
             CheckBox
@@ -322,7 +412,7 @@ ApplicationWindow
 
                 onCheckedChanged:
                 {
-                   appcore.invertXYChanged(checked);
+                    appcore.invertXYChanged(checked);
                 }
             }
         }
