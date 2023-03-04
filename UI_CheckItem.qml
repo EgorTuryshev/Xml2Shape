@@ -168,7 +168,7 @@ Item {
                                 from: 0;
                                 to: 360;
                                 easing.type: Easing.InSine
-                                duration: 800;
+                                duration: 500;
                             }
                         }
                         NumberAnimation

@@ -73,7 +73,14 @@ void Geometry::AddAttribute(DBFFieldType type, QString field, QString value)
 }
 void Geometry::StartSubpart()
 {
-    if (nParts > 0) SmartReverse();
+    if (nParts > 0)
+    {
+        if(Xs[IteratorsOfVerts.last()] != Xs.last() || Ys[IteratorsOfVerts.last()] != Ys.last())
+        {
+            PointPush(Xs[IteratorsOfVerts.last()], Ys[IteratorsOfVerts.last()]);
+        }
+        SmartReverse();
+    }
     nParts++;
     IteratorsOfVerts.push_back(nVerts);
 }
