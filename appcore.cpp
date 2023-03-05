@@ -167,7 +167,7 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
                 }
             }*/
 
-            zip_reader.extractAll("./temp");
+            /*zip_reader.extractAll("./temp");
             QDir tempDir("./temp");
             tempDir.setFilter(QDir::Files);
             QFileInfoList files(tempDir.entryInfoList());
@@ -180,8 +180,36 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
 
                 QFile::remove(fileInfo.absoluteFilePath());
                 //std::filesystem::remove(fileInfo.absoluteFilePath().toStdString());
-            }
+            }*/
 
+            foreach (QZipReader::FileInfo info, zip_reader.fileInfoList())
+            {
+                if (info.isFile) // CHECK: Нужна ли эта проверка?
+                {
+                    QFileInfo currFileInfo(info.filePath);
+                    // CHECK: Нужно ли вообще проверять каждый файл по отдельности, или лучше сразу использовать метод
+                    // .extractAll()?
+                    if (currFileInfo.suffix() == "xml")
+                    {
+                        QByteArray fileData = zip_reader.fileData(info.filePath); // ?
+                        qDebug() << "Считаны данные файла";
+                        QString fileDataStr(fileData);
+                        qDebug() << "Данные файла переведены в строку";
+                        xslt_processor::setcwd("");
+                        QString processedXML_str = xslt_processor::processXSLT_data(QFileInfo(xmlFilePath).completeBaseName(),
+                                                                                    fileDataStr,
+                                                                                    xslFilePath);
+                        QString filePath = targetPath + "/" + currFileInfo.completeBaseName();
+                        xml_parser::setXML(processedXML_str);
+                        QString featureType = xml_parser::readFeatureType();
+                        xml_header header = xml_parser::readTypeHeader();
+                        QVector<Feature> features = xml_parser::readFeautures();
+
+                        IO_Shape s;
+                        s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
+                    }
+                }
+            }
         }
     }
     else
