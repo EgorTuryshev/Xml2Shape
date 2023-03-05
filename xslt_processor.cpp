@@ -30,14 +30,18 @@ QString xslt_processor::processXSLT_data(QString xmlFileName, QString xmlData, Q
         return "";
     }
     char *data = (char*)mem.data(); // Указатель на общую память
-    if (mem.lock()) // Это приложение начинает работу с общей памятью
+    memcpy(data, xmlDataBytes.data(), strlen(xmlDataBytes.data() + 1)); // +1?
+    mem.unlock(); // Заканчиваем работу с общей памятью
+
+    // Более медленный способ
+    /*if (mem.lock())
     {
-        for (int i = 0; i < xmlDataBytes.size(); i++) // Записываем данные в общую память
+        for (int i = 0; i < xmlDataBytes.size(); i++)
         {
             data[i] = xmlDataBytes[i];
         }
-        mem.unlock(); // Заканчиваем работу с общей памятью
-    }
+        mem.unlock();
+    }*/
 
     QProcess p;
     QStringList params;
