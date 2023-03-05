@@ -47,6 +47,19 @@ ApplicationWindow
         property alias invertXY: invertXY.checked
     }
 
+    Timer
+    {
+        id: timer
+    }
+
+    function delay(delayTime, cb)
+    {
+        timer.interval = delayTime;
+        timer.repeat = false;
+        timer.triggered.connect(cb);
+        timer.start();
+    }
+
     Item{
 
         anchors.fill: parent
@@ -55,7 +68,7 @@ ApplicationWindow
         {
             anchors.fill: parent
             id: leftGroup
-            z: 0
+            z: 1
             Rectangle
             {
                 id: leftBorder
@@ -83,20 +96,6 @@ ApplicationWindow
                         to: 0
                         easing.type: Easing.InOutQuad
                     }
-                    SequentialAnimation
-                    {
-                        PauseAnimation
-                        {
-                            duration: 350
-                        }
-                        NumberAnimation
-                        {
-                            target: leftGroup
-                            property: "z"
-                            duration: 0
-                            to: 0
-                        }
-                    }
                 }
                 ParallelAnimation
                 {
@@ -116,21 +115,6 @@ ApplicationWindow
                         duration: 400
                         to: window.width - 100
                         easing.type: Easing.InOutQuad
-                    }
-                    SequentialAnimation
-                    {
-
-                        PauseAnimation
-                        {
-                            duration: 350
-                        }
-                        NumberAnimation
-                        {
-                            target: leftGroup
-                            property: "z"
-                            duration: 0
-                            to: 100
-                        }
                     }
                 }
             }
@@ -211,12 +195,13 @@ ApplicationWindow
             UI_Button
             {
                 id: leftSwitchMenuBtn
-                text:"<"
                 anchors.right: leftBorder.right
+                text: "<<"
+                font.bold: true
                 anchors.top: leftBorder.top
-                height: 50
-                width: 20
-                anchors.topMargin: leftBorder.height / 2 - height
+                height: 60
+                width: 30
+                anchors.topMargin: leftBorder.height / 2 - height / 2
                 onClicked:
                 {
                     if(isRightMenuActive)
@@ -270,7 +255,7 @@ ApplicationWindow
                         id: rightSlideOutTargets
                         targets: [selectXMLBtn, writeBtn, instructionDesc, writeBtnMark, selectXMLMark, rightSwitchMenuBtn]
                         property: "opacity"
-                        duration: 400
+                        duration: 300
                         to: 1
                         easing.type: Easing.InOutQuad
                     }
@@ -279,7 +264,7 @@ ApplicationWindow
 
                         PauseAnimation
                         {
-                            duration: 350
+                            duration: 0
                         }
                         NumberAnimation
                         {
@@ -314,7 +299,7 @@ ApplicationWindow
 
                         PauseAnimation
                         {
-                            duration: 350
+                            duration: 300
                         }
                         NumberAnimation
                         {
@@ -342,12 +327,13 @@ ApplicationWindow
             UI_Button
             {
                 id: rightSwitchMenuBtn
-                text:">"
+                text:">>"
+                font.bold: true
                 anchors.left: rightBorder.left
                 anchors.top: rightBorder.top
-                height: 50
-                width: 20
-                anchors.topMargin: rightBorder.height / 2 - height
+                height: 60
+                width: 30
+                anchors.topMargin: rightBorder.height / 2 - height / 2
                 onClicked:
                 {
                     if(isRightMenuActive)
@@ -374,46 +360,28 @@ ApplicationWindow
                     {
                         appcore.test(selectXMLBtn.filePaths[i], appcore.getCurrentXSLTPath(), folderDialog.selectedFolder);
                     }
+                    shpPathHolder.text = appcore.getFileName(selectedFolder) + "\\ ";
                     pBar.visible = false;
+                    writeBtnMark.animateAsActive();
+                    delay(5000, function()
+                    {
+                        writeBtnMark.animateAsFlushed();
+                    });
                 }
                 onRejected: {
                     pBar.visible = false;
+                    writeBtnMark.reset();
                 }
-            }
-
-            UI_Button
-            {
-                id: selectXMLBtn
-                property var filePaths: []
-
-                anchors.bottom: rightBorder.bottom
-                anchors.left: rightBorder.left
-                anchors.leftMargin: 15
-                anchors.bottomMargin: 50
-                text: "Выбрать КПТ-файл(ы)"
-                onClicked:{
-                    xmlFileDialog.open();
-                }
-            }
-
-            UI_CheckItem
-            {
-                id: selectXMLMark
-                width: selectXMLBtn.height - 10
-                height: selectXMLBtn.height - 10
-                anchors.top: selectXMLBtn.top
-                anchors.left: selectXMLBtn.right
-                anchors.leftMargin: 5
-                anchors.topMargin: 5
             }
 
             UI_Button
             {
                 id: writeBtn
                 anchors.bottom: rightBorder.bottom
-                anchors.left: selectXMLMark.right
-                anchors.leftMargin: 20
+                anchors.left: rightBorder.left
+                anchors.leftMargin: 45
                 anchors.bottomMargin: 50
+                enabled: false
                 text: "Записать ShapeFile"
                 onClicked: {
                     pBar.visible = true;
@@ -430,9 +398,56 @@ ApplicationWindow
                 anchors.left: writeBtn.right
                 anchors.leftMargin: 5
                 anchors.topMargin: 5
+                enabled: false
             }
 
+            UI_PathHolder
+            {
+                id: shpPathHolder
+                anchors.left: writeBtnMark.right
+                anchors.top: writeBtnMark.top
+                anchors.leftMargin: 5
+                height: selectXMLMark.height
+                text: "Путь к ShapeFile"
+                enabled: false
+            }
             UI_Button
+            {
+                id: selectXMLBtn
+                property var filePaths: []
+                width: writeBtn.width
+                anchors.bottom: writeBtn.top
+                anchors.left: writeBtn.left
+                anchors.leftMargin: 0
+                anchors.bottomMargin: 0
+                text: "Задать КПТ - файл"
+                onClicked:{
+                    xmlFileDialog.open();
+                }
+            }
+
+            UI_CheckItem
+            {
+                id: selectXMLMark
+                width: selectXMLBtn.height - 10
+                height: selectXMLBtn.height - 10
+                anchors.top: selectXMLBtn.top
+                anchors.left: selectXMLBtn.right
+                anchors.leftMargin: 5
+                anchors.topMargin: 5
+            }
+
+            UI_PathHolder
+            {
+                id: xmlPathHolder
+                anchors.left: selectXMLMark.right
+                anchors.top: selectXMLMark.top
+                anchors.leftMargin: 5
+                height: selectXMLMark.height
+                text: "Путь к КПТ - файлу"
+            }
+
+            /*UI_Button
             {
                 id: animTest
                 anchors.bottom: selectXMLBtn.top
@@ -450,11 +465,11 @@ ApplicationWindow
                 id: cItem
                 width: animTest.height - 10
                 height: animTest.height - 10
-                anchors.bottom: writeBtn.top
+                anchors.bottom: animTest.bottom
                 anchors.left: animTest.right
                 anchors.leftMargin: 5
                 anchors.bottomMargin: 5
-            }
+            }*/
 
             FileDialog {
                 id: xmlFileDialog
@@ -463,7 +478,16 @@ ApplicationWindow
                 acceptLabel: "Выбрать"
                 fileMode: FileDialog.OpenFiles
                 onAccepted: {
+                    writeBtnMark.enabled = true;
+                    shpPathHolder.enabled = true;
+                    xmlPathHolder.text = appcore.getFileName(selectedFiles[0]);
+                    writeBtn.enabled = true;
                     selectXMLBtn.filePaths = selectedFiles;
+                    selectXMLMark.animateAsActive();
+                }
+                onRejected:
+                {
+
                 }
             }
 
@@ -473,11 +497,19 @@ ApplicationWindow
                 anchors.top: rightBorder.top
                 anchors.left: selectXMLBtn.left
                 anchors.topMargin: 25
-                width: 400
+                width: rightBorder.width - 100
                 headertext: "Порядок работы"
                 text: "
-                <h3>Тут будет краткое руководство пользователя</h3>
+                <b>1. Выбрать КПТ - файл</b>
+                <br>
+                <b>2. Выбрать шаблон*</b>
+                <br>
+                <b>3. Сохранить ShapeFile<b>
+                <br>
+                <br>
+                *- при необходимости
                 "
+
             }
 
 
@@ -507,7 +539,7 @@ ApplicationWindow
     {
 
         Material.background: Material.accentColor
-        Material.foreground: "#ffffff"
+        Material.foreground: Material.accentColor.lighter(3)
         font.pixelSize: 14
         contentWidth: parent.width
 
@@ -590,10 +622,6 @@ ApplicationWindow
                 onClicked: {
                     appcore.refreshCategories();
                 }
-            }
-            MenuBarItem
-            {
-                text: "Исправить разметку"
             }
             CheckBox
             {
