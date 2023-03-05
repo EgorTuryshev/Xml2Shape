@@ -389,6 +389,16 @@ ApplicationWindow
                 }
             }
 
+        FileDialog {
+            id: xmlFileDialog
+            nameFilters: ["ZIP archives (*.zip)", "XML files (*.xml)"]
+            currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0] // TO-DO: Изменить
+            acceptLabel: "Выбрать"
+            fileMode: FileDialog.OpenFiles
+            onAccepted: {
+                selectXMLBtn.filePaths = selectedFiles;
+            }
+        }
             UI_CheckItem
             {
                 id: writeBtnMark
