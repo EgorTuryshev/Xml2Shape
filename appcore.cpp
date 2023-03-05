@@ -167,6 +167,7 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
                 }
             }*/
 
+            // Это тоже медленный способ (узким местом является удаление временных файлов)
             /*zip_reader.extractAll("./temp");
             QDir tempDir("./temp");
             tempDir.setFilter(QDir::Files);
@@ -191,6 +192,7 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
                     // .extractAll()?
                     if (currFileInfo.suffix() == "xml")
                     {
+                        qDebug(logDebug()) << "Начало";
                         QByteArray fileData = zip_reader.fileData(info.filePath); // ?
                         qDebug(logDebug()) << "Считаны данные файла";
                         QString fileDataStr(fileData);
