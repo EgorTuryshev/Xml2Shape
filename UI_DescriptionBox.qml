@@ -13,7 +13,7 @@ Rectangle
     antialiasing: true
     border.width: 0.5
     radius: 5
-    border.color: "grey"
+    border.color: Material.Grey
     opacity: 0.7
 
     Text {
@@ -26,6 +26,8 @@ Rectangle
         height: parent.height
         width: parent.width
         text: root.text
+        antialiasing: true
+        color: "black"
         wrapMode: Text.WordWrap
 
     }
@@ -37,7 +39,7 @@ Rectangle
                 when: root.text.length > 20
                 PropertyChanges {
                     target: border
-                    width: 205
+                    width: parent.width
                     height: text_field.paintedHeight + 5
                 }
             },
