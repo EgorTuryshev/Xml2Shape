@@ -255,6 +255,13 @@ QVariant Appcore::getCurrentXSLTDescription()
     return this->categories.at(this->getCombo1_Index()).GetXslts().at(this->getCombo2_Index()).GetDesc();
 }
 
+QVariant Appcore::getFileName(QVariant val)
+{
+    QString path = val.toString();
+    path = path.mid(path.lastIndexOf("/") + 1);
+    return path;
+}
+
 QString Appcore::getCurrentXSLTPath() // TO-DO: добавить проверку на наличие XSL-файла (?)
 {
     return removeExt(this->categories.at(this->getCombo1_Index()).GetPath() + categories.at(this->getCombo1_Index()).GetXslts().at(this->getCombo2_Index()).GetRName()) + ".xsl"; // TO-DO: оптимизировать

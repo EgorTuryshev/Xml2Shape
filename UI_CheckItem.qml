@@ -5,22 +5,37 @@ import Qt5Compat.GraphicalEffects
 Item {
     id: root
     antialiasing: true
-    property color color: Material.accent
+    property color color: !enabled? "lightgrey" : Material.accent
     property bool isActive: false
     function switchState()
     {
         if(!isActive)
         {
             animation.start();
-            border_animation.start();
         }
         else
         {
             flush.start();
-            border_animation.start();
         }
-
+        border_animation.start();
         isActive = !isActive;
+    }
+    function animateAsActive()
+    {
+        animation.start();
+        border_animation.start();
+        isActive = true;
+    }
+    function animateAsFlushed()
+    {
+        flush.start();
+        border_animation.start();
+        isActive = false;
+    }
+    function reset()
+    {
+        reset.start();
+        isActive = false;
     }
     Rectangle
     {
@@ -125,7 +140,7 @@ Item {
                             target: animRect
                             property: "x"
                             from: -50 ;
-                            to: 50 ;
+                            to: 28 ;
                             easing.type: Easing.InOutQuad
                             duration: 800 ;
                         }
@@ -141,7 +156,7 @@ Item {
                         {
                             target: animRect
                             property: "x"
-                            from: 50;
+                            from: 28;
                             to: 0;
                             easing.type: Easing.InOutQuad
                             duration: 400 ;
@@ -159,7 +174,7 @@ Item {
                                 from: 1;
                                 to: 0;
                                 easing.type: Easing.InSine
-                                duration: 600;
+                                duration: 500;
                             }
                             NumberAnimation
                             {
@@ -168,8 +183,37 @@ Item {
                                 from: 0;
                                 to: 360;
                                 easing.type: Easing.InSine
-                                duration: 500;
+                                duration: 1000;
                             }
+                        }
+                        NumberAnimation
+                        {
+                            target: animRect
+                            property: "x"
+                            from: 0;
+                            to: -50;
+                            duration: 0;
+                        }
+                        NumberAnimation
+                        {
+                            target: checkMark
+                            property: "scale"
+                            from: 0;
+                            to: 1;
+                            duration: 0;
+                        }
+                    }
+                    SequentialAnimation
+                    {
+                        id: reset
+                        NumberAnimation
+                        {
+                            target: checkMark
+                            property: "scale"
+                            from: 1;
+                            to: 0;
+                            easing.type: Easing.InSine
+                            duration: 0;
                         }
                         NumberAnimation
                         {

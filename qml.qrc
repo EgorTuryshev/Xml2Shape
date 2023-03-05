@@ -4,5 +4,7 @@
         <file>UI_Combo.qml</file>
         <file>UI_DescriptionBox.qml</file>
         <file>UI_CheckItem.qml</file>
+        <file>UI_PathHolder.qml</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>

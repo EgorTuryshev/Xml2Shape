@@ -13,7 +13,7 @@ Rectangle
     antialiasing: true
     border.width: 0.5
     radius: 5
-    border.color: "grey"
+    border.color: Material.Grey
     opacity: 0.7
 
     Text {
@@ -26,6 +26,8 @@ Rectangle
         height: parent.height
         width: parent.width
         text: root.text
+        antialiasing: true
+        color: "black"
         wrapMode: Text.WordWrap
 
     }
