@@ -42,7 +42,7 @@ QString xslt_processor::processXSLT_data(QString xmlFileName, QString xmlData, Q
     QProcess p;
     QStringList params;
     QFileInfo xsltInfo (xslt_processor::cwd + xsltPath); // ?
-    QString program = "../Xml2Shape/xslt_processor_data_app/xslt_processor_data.exe"; // TO-DO: перед релизом изменить путь
+    QString program = "../xslt_processor_data_app/xslt_processor_data.exe"; // TO-DO: перед релизом изменить путь
     params << xmlFileName << xsltInfo.absoluteFilePath();
     p.start(program, params);
     p.waitForFinished();

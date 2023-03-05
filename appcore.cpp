@@ -192,13 +192,14 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
                     if (currFileInfo.suffix() == "xml")
                     {
                         QByteArray fileData = zip_reader.fileData(info.filePath); // ?
-                        qDebug() << "Считаны данные файла";
+                        qDebug(logDebug()) << "Считаны данные файла";
                         QString fileDataStr(fileData);
-                        qDebug() << "Данные файла переведены в строку";
+                        qDebug(logDebug()) << "Данные файла переведены в строку";
                         xslt_processor::setcwd("");
                         QString processedXML_str = xslt_processor::processXSLT_data(QFileInfo(xmlFilePath).completeBaseName(),
                                                                                     fileDataStr,
                                                                                     xslFilePath);
+                        qDebug(logDebug()) << "К файлу применен XSL";
                         QString filePath = targetPath + "/" + currFileInfo.completeBaseName();
                         xml_parser::setXML(processedXML_str);
                         QString featureType = xml_parser::readFeatureType();
@@ -207,6 +208,7 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
 
                         IO_Shape s;
                         s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
+                        qDebug(logDebug()) << "ShapeFile записан";
                     }
                 }
             }
@@ -214,8 +216,10 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
     }
     else
     {
+        qDebug(logDebug()) << "Начало";
         xslt_processor::setcwd("");
         QString processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
+        qDebug(logDebug()) << "К файлу применен XSL";
         QString filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName();
         xml_parser::setXML(processedXML_str);
         QString featureType = xml_parser::readFeatureType();
@@ -224,6 +228,7 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
 
         IO_Shape s;
         s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
+        qDebug(logDebug()) << "ShapeFile записан";
     }
 }
 
