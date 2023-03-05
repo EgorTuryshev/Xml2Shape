@@ -6,5 +6,7 @@
         <file>UI_CheckItem.qml</file>
         <file>UI_PathHolder.qml</file>
     </qresource>
-    <qresource prefix="/"/>
+    <qresource prefix="/">
+        <file>folder.svg</file>
+    </qresource>
 </RCC>

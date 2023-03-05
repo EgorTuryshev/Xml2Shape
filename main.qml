@@ -447,7 +447,7 @@ ApplicationWindow
                 text: "Путь к КПТ - файлу"
             }
 
-            /*UI_Button
+            UI_Button
             {
                 id: animTest
                 anchors.bottom: selectXMLBtn.top
@@ -460,7 +460,7 @@ ApplicationWindow
                 }
             }
 
-            UI_CheckItem
+            /*UI_CheckItem
             {
                 id: cItem
                 width: animTest.height - 10
