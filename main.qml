@@ -60,7 +60,7 @@ ApplicationWindow
         timer.start();
     }
 
-    Item{
+    Item {
 
         anchors.fill: parent
 
@@ -200,7 +200,6 @@ ApplicationWindow
                 font.bold: true
                 anchors.top: leftBorder.top
                 height: 60
-                width: 30
                 anchors.topMargin: leftBorder.height / 2 - height / 2
                 onClicked:
                 {
@@ -332,7 +331,6 @@ ApplicationWindow
                 anchors.left: rightBorder.left
                 anchors.top: rightBorder.top
                 height: 60
-                width: 30
                 anchors.topMargin: rightBorder.height / 2 - height / 2
                 onClicked:
                 {
@@ -420,7 +418,7 @@ ApplicationWindow
                 anchors.left: writeBtn.left
                 anchors.leftMargin: 0
                 anchors.bottomMargin: 0
-                text: "Задать КПТ - файл"
+                text: "Задать КПТ-файл"
                 onClicked:{
                     xmlFileDialog.open();
                 }
@@ -444,10 +442,10 @@ ApplicationWindow
                 anchors.top: selectXMLMark.top
                 anchors.leftMargin: 5
                 height: selectXMLMark.height
-                text: "Путь к КПТ - файлу"
+                text: "Путь к КПТ-файлу"
             }
 
-            UI_Button
+            /*UI_Button
             {
                 id: animTest
                 anchors.bottom: selectXMLBtn.top
@@ -458,7 +456,7 @@ ApplicationWindow
                 {
                     cItem.switchState();
                 }
-            }
+            }*/
 
             /*UI_CheckItem
             {
@@ -500,7 +498,7 @@ ApplicationWindow
                 width: rightBorder.width - 100
                 headertext: "Порядок работы"
                 text: "
-                <b>1. Выбрать КПТ - файл</b>
+                <b>1. Выбрать КПТ-файл</b>
                 <br>
                 <b>2. Выбрать шаблон*</b>
                 <br>
