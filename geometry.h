@@ -62,7 +62,7 @@ private:
     int nVerts = 0;
     QVector<double> Xs;
     QVector<double> Ys;
-    QVector<int> IteratorsOfVerts {0};
+    QVector<int> IteratorsOfVerts {};
     QVector<Geometry_Attribute> GATS;
 
     void XPush(double x);

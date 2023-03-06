@@ -45,6 +45,7 @@ ApplicationWindow
         property alias isAutoClear: autoClear.checked
         property alias autoDirtyFix: autoDirtyFix.checked
         property alias invertXY: invertXY.checked
+        property alias isRightMenuActive: window.isRightMenuActive
     }
 
     Timer

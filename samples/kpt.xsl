@@ -35,7 +35,7 @@
 
 	<!-- Имя исходного файла -->
 	<xsl:param name="source_file">
-		<xsl:value-of select="$path" />
+		<xsl:value-of select="'path'" />
 	</xsl:param>
 
 	<!-- 

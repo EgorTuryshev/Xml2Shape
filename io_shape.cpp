@@ -94,6 +94,7 @@ void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Featur
             for (int k = 0; k < coordinates.count(); k++)
             {
                 Coordinate currCoordinate = coordinates.at(k);
+                qDebug(logDebug()) << currCoordinate.getX();
 
                 if (isInvertXY)
                 {
@@ -113,6 +114,7 @@ void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Featur
                 for (int l = 0; l < currHole.count(); l++)
                 {
                     Coordinate currHoleCoordinate = currHole.at(l);
+                    qDebug(logDebug()) << currHoleCoordinate.getX();
                     if (isInvertXY)
                     {
                         polygon.PointPush(currHoleCoordinate.getY(), currHoleCoordinate.getX());

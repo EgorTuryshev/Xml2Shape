@@ -121,6 +121,12 @@ QVector<Feature> xml_parser::readFeautures()
             for (int k = 0; k < coordsDom.count(); k++)
             {
                 QDomElement currCoordEl = coordsDom.at(k).toElement();
+
+                if (currCoordEl.parentNode().nodeName() == "Hole") // ?
+                {
+                    break;
+                }
+
                 double x = currCoordEl.attribute("x").toDouble();
                 double y = currCoordEl.attribute("y").toDouble();
                 unsigned int ord_number = currCoordEl.attribute("ord_number").toUInt();

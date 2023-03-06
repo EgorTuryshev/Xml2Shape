@@ -3,6 +3,7 @@
 #include "xslt_processor.h"
 #include "fs_property_manager.h"
 #include "io_shape.h"
+#include "geometry.h" // УБРАТЬ
 
 QVector<fs_category> Appcore::categories = QVector<fs_category>();
 
@@ -217,11 +218,17 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
     }
     else
     {
-        qDebug(logDebug()) << "Начало";
         xslt_processor::setcwd("");
         QString processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
-        qDebug(logDebug()) << "К файлу применен XSL";
-        qDebug(logDebug()) << processedXML_str;
+
+        QFile temp("temp.xml");
+        if (temp.open(QIODevice::WriteOnly))
+        {
+            QTextStream writeStream(&temp);
+            writeStream << processedXML_str;
+            temp.close();
+        }
+
         QString filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName();
         xml_parser::setXML(processedXML_str);
         QString featureType = xml_parser::readFeatureType();
@@ -230,7 +237,6 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
 
         IO_Shape s;
         s.WriteShape(featureType, header, features, filePath, this->isInvertXY, this->isAutoDirtyFix);
-        qDebug(logDebug()) << "ShapeFile записан";
     }
 }
 
@@ -257,7 +263,7 @@ void Appcore::clearLog(bool isAutoClearing)
 }
 QVector<fs_category> Appcore::Get_Categories()
 {
-    if(!categories.isEmpty())
+    if (!categories.isEmpty())
     {
         return categories;
     }
@@ -266,7 +272,6 @@ QVector<fs_category> Appcore::Get_Categories()
         ReadCategories();
         return categories;
     }
-
 }
 
 int Appcore::GetCategoryByName(QVector<fs_category> categories, QString name)

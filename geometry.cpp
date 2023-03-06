@@ -53,14 +53,15 @@ void Geometry::AddAttribute(DBFFieldType type, QString field, QString value)
     {
         if(type == FTDouble)
         {
-            if(DBFAddField(dbf, &field.toStdString()[0], type, 11, 3) == -1)
+            // TO-DO: Сделать динамическое определение размера поля (с проверкой)
+            if(DBFAddField(dbf, &field.toStdString()[0], type, 127, 3) == -1)
             {
                 qCritical(logCritical()) << "Не удалось создать поле FTDouble" << " со значением " << value;
             }
         }
         else
         {
-            if(DBFAddField(dbf, &field.toStdString()[0], type, 11, 0) == -1)
+            if(DBFAddField(dbf, &field.toStdString()[0], type, 127, 0) == -1)
             {
                 qCritical(logCritical()) << "Не удалось создать поле " << type << " со значением " << value;
             }
@@ -75,6 +76,7 @@ void Geometry::StartSubpart()
 {
     if (nParts > 0)
     {
+        // TO-DO: Исправить
         if(Xs[IteratorsOfVerts.last()] != Xs.last() || Ys[IteratorsOfVerts.last()] != Ys.last())
         {
             PointPush(Xs[IteratorsOfVerts.last()], Ys[IteratorsOfVerts.last()]);

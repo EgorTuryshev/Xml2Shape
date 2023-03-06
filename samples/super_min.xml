@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extract_cadastral_plan_territory>
+<details_statement>
+<group_top_requisites>
+<organ_registr_rights>Филиал федерального государственного бюджетного учреждения "Федеральная кадастровая палата  Федеральной службы государственной регистрации кадастра и картографии" по Республике Коми</organ_registr_rights>
+<date_formation>2022-04-05</date_formation>
+<registration_number>КУВИ-001/2022-49503898</registration_number>
+</group_top_requisites>
+</details_statement>
+<details_request>
+<date_received_request>2022-04-05</date_received_request>
+<date_receipt_request_reg_authority_rights>2022-04-05</date_receipt_request_reg_authority_rights>
+</details_request>
+<cadastral_blocks>
+<cadastral_block>
+<cadastral_number>11:19:0801022</cadastral_number>
+<area_quarter>
+<area>372.15</area>
+<unit>059</unit>
+</area_quarter>
+<record_data>
+<base_data>
+<land_records>
+<land_record>
+  <object>
+	<common_data>
+	  <type>
+		<code>002001001000</code>
+		<value>Земельный участок</value>
+	  </type>
+	  <cad_number>11:19:0801022:12</cad_number>
+	</common_data>
+	<subtype>
+	  <code>03</code>
+	  <value>Обособленный участок</value>
+	</subtype>
+  </object>
+  <cad_links>
+	<common_land>
+	  <common_land_cad_number>
+		<cad_number>11:19:0000000:37</cad_number>
+	  </common_land_cad_number>
+	</common_land>
+  </cad_links>
+  <params>
+	<category>
+	  <type>
+		<code>003002000000</code>
+		<value>Земли населенных пунктов</value>
+	  </type>
+	</category>
+	<permittes_uses_grad_reg>
+	  <reg_numb_border>11:19-7.111</reg_numb_border>
+	</permittes_uses_grad_reg>
+	<area>
+	  <value>7.02</value>
+	</area>
+  </params>
+  <address_location>
+	<address>
+	  <address_fias>
+		<level_settlement>
+		  <okato>87422000000</okato>
+		  <kladr>1100000600000</kladr>
+		  <region>
+			<code>11</code>
+			<value>Республика Коми</value>
+		  </region>
+		  <city>
+			<type_city>г</type_city>
+			<name_city>Сосногорск</name_city>
+		  </city>
+		</level_settlement>
+	  </address_fias>
+	  <readable_address>Респ. Коми, г. Сосногорск</readable_address>
+	</address>
+	<rel_position>
+	  <in_boundaries_mark>true</in_boundaries_mark>
+	  <ref_point_name>ВЛ-110 кВ № 155,156  "СТЭЦ" - ПС "НПС" - ПС "КС-10" - ПС "Промышленная"</ref_point_name>
+	</rel_position>
+  </address_location>
+  <cost>
+	<value>0</value>
+  </cost>
+  <contours_location>
+	<contours>
+	  <contour>
+		<entity_spatial>
+		  <sk_id>11.У.025</sk_id>
+		  <spatials_elements>
+			<spatial_element>
+					  <ordinates>
+						<ordinate>
+						  <x>844207.69</x>
+						  <y>5298225.39</y>
+						  <ord_nmb>1</ord_nmb>
+						  <num_geopoint>45</num_geopoint>
+						  <geopoint_zacrep>Закрепление отсутствует</geopoint_zacrep>
+						  <delta_geopoint>0.1</delta_geopoint>
+						</ordinate>
+						<ordinate>
+						  <x>844210.08</x>
+						  <y>5298224.45</y>
+						  <ord_nmb>2</ord_nmb>
+						  <num_geopoint>46</num_geopoint>
+						  <geopoint_zacrep>Закрепление отсутствует</geopoint_zacrep>
+						  <delta_geopoint>0.1</delta_geopoint>
+						</ordinate>
+						<ordinate>
+						  <x>844209.15</x>
+						  <y>5298221.88</y>
+						  <ord_nmb>3</ord_nmb>
+						  <num_geopoint>47</num_geopoint>
+						  <geopoint_zacrep>Закрепление отсутствует</geopoint_zacrep>
+						  <delta_geopoint>0.1</delta_geopoint>
+						</ordinate>
+						<ordinate>
+						  <x>844206.76</x>
+						  <y>5298222.83</y>
+						  <ord_nmb>4</ord_nmb>
+						  <num_geopoint>48</num_geopoint>
+						  <geopoint_zacrep>Закрепление отсутствует</geopoint_zacrep>
+						  <delta_geopoint>0.1</delta_geopoint>
+						</ordinate>
+						<ordinate>
+						  <x>844207.69</x>
+						  <y>5298225.39</y>
+						  <ord_nmb>1</ord_nmb>
+						  <num_geopoint>45</num_geopoint>
+						  <geopoint_zacrep>Закрепление отсутствует</geopoint_zacrep>
+						  <delta_geopoint>0.1</delta_geopoint>
+						</ordinate>
+					  </ordinates>
+			</spatial_element>
+		  </spatials_elements>
+		</entity_spatial>
+	  </contour>
+	</contours>
+  </contours_location>
+</land_record>
+</land_records>
+</base_data>
+</record_data>
+</cadastral_block>
+</cadastral_blocks>
+</extract_cadastral_plan_territory>
