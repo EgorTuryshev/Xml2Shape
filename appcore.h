@@ -33,6 +33,7 @@ public:
     Q_INVOKABLE QVariant getCurrentCategoryDescription();
     Q_INVOKABLE QVariant getCurrentXSLTDescription();
     Q_INVOKABLE QVariant getFileName(QVariant val);
+    Q_INVOKABLE QVariant getFilePath(QVariant val);
     Q_INVOKABLE QString getCurrentXSLTPath();
     Q_INVOKABLE void invertXYChanged(bool isInvertXY);
     Q_INVOKABLE void autoDirtyFixChanged(bool isAutoDirtyFix);

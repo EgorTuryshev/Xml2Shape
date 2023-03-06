@@ -201,6 +201,7 @@ ApplicationWindow
                 font.bold: true
                 anchors.top: leftBorder.top
                 height: 60
+                width: 40
                 anchors.topMargin: leftBorder.height / 2 - height / 2
                 onClicked:
                 {
@@ -332,6 +333,7 @@ ApplicationWindow
                 anchors.left: rightBorder.left
                 anchors.top: rightBorder.top
                 height: 60
+                width: 40
                 anchors.topMargin: rightBorder.height / 2 - height / 2
                 onClicked:
                 {
@@ -355,22 +357,53 @@ ApplicationWindow
                 acceptLabel: "Выбрать"
 
                 onAccepted: {
-                    for (var i = 0; i < selectXMLBtn.filePaths.length; i++)
-                    {
-                        appcore.test(selectXMLBtn.filePaths[i], appcore.getCurrentXSLTPath(), folderDialog.selectedFolder);
-                    }
-                    shpPathHolder.text = appcore.getFileName(selectedFolder) + "\\ ";
-                    pBar.visible = false;
-                    writeBtnMark.animateAsActive();
-                    delay(5000, function()
-                    {
-                        writeBtnMark.animateAsFlushed();
-                    });
+                    shpPathHolder.text = appcore.getFilePath(selectedFolder) + "/ ";
+                    reviewShpDirBtnMark.animateAsActive();
+                    writeBtn.enabled = true;
+                    writeBtnMark.enabled = true;
                 }
-                onRejected: {
-                    pBar.visible = false;
-                    writeBtnMark.reset();
+                onRejected:
+                {
+                    reviewShpDirBtnMark.reset();
+                    writeBtn.enabled = false;
+                    writeBtnMark.enabled = false;
                 }
+            }
+
+            UI_Button
+            {
+                id: reviewShpDirBtn
+                anchors.bottom: writeBtn.top
+                anchors.left: writeBtn.left
+                anchors.bottomMargin: 10
+                enabled: false
+                text: "Выбор директории ShapeFile"
+                onClicked:
+                {
+                    folderDialog.open();
+                }
+            }
+
+            UI_CheckItem
+            {
+                id: reviewShpDirBtnMark
+                width: reviewShpDirBtn.height - 10
+                height: reviewShpDirBtn.height - 10
+                anchors.top: reviewShpDirBtn.top
+                anchors.left: reviewShpDirBtn.right
+                anchors.leftMargin: 5
+                anchors.topMargin: 5
+                enabled: false
+            }
+
+            UI_PathHolder
+            {
+                id: shpPathHolder
+                anchors.left: reviewShpDirBtnMark.right
+                anchors.top: reviewShpDirBtnMark.top
+                anchors.leftMargin: 5
+                height: selectXMLMark.height
+                enabled: false
             }
 
             UI_Button
@@ -380,11 +413,20 @@ ApplicationWindow
                 anchors.left: rightBorder.left
                 anchors.leftMargin: 45
                 anchors.bottomMargin: 50
+                anchors.right: reviewShpDirBtn.right
                 enabled: false
                 text: "Записать ShapeFile"
-                onClicked: {
-                    pBar.visible = true;
-                    folderDialog.open();
+                onClicked:
+                {
+                    for (var i = 0; i < selectXMLBtn.filePaths.length; i++)
+                    {
+                        appcore.test(selectXMLBtn.filePaths[i], appcore.getCurrentXSLTPath(), folderDialog.selectedFolder);
+                    }
+                    writeBtnMark.animateAsActive();
+                    delay(5000, function()
+                    {
+                        writeBtnMark.animateAsFlushed();
+                    });
                 }
             }
 
@@ -400,27 +442,18 @@ ApplicationWindow
                 enabled: false
             }
 
-            UI_PathHolder
-            {
-                id: shpPathHolder
-                anchors.left: writeBtnMark.right
-                anchors.top: writeBtnMark.top
-                anchors.leftMargin: 5
-                height: selectXMLMark.height
-                text: "Путь к ShapeFile"
-                enabled: false
-            }
             UI_Button
             {
                 id: selectXMLBtn
                 property var filePaths: []
-                width: writeBtn.width
-                anchors.bottom: writeBtn.top
-                anchors.left: writeBtn.left
+                width: reviewShpDirBtn.width
+                anchors.bottom: reviewShpDirBtn.top
+                anchors.left: reviewShpDirBtn.left
                 anchors.leftMargin: 0
                 anchors.bottomMargin: 0
-                text: "Задать КПТ-файл"
-                onClicked:{
+                text: "Выбрать КПТ-файл(ы)"
+                onClicked:
+                {
                     xmlFileDialog.open();
                 }
             }
@@ -443,7 +476,6 @@ ApplicationWindow
                 anchors.top: selectXMLMark.top
                 anchors.leftMargin: 5
                 height: selectXMLMark.height
-                text: "Путь к КПТ-файлу"
             }
 
             /*UI_Button
@@ -477,10 +509,10 @@ ApplicationWindow
                 acceptLabel: "Выбрать"
                 fileMode: FileDialog.OpenFiles
                 onAccepted: {
-                    writeBtnMark.enabled = true;
+                    reviewShpDirBtnMark.enabled = true;
                     shpPathHolder.enabled = true;
-                    xmlPathHolder.text = appcore.getFileName(selectedFiles[0]);
-                    writeBtn.enabled = true;
+                    xmlPathHolder.text = appcore.getFilePath(selectedFiles[0]);
+                    reviewShpDirBtn.enabled = true;
                     selectXMLBtn.filePaths = selectedFiles;
                     selectXMLMark.animateAsActive();
                 }

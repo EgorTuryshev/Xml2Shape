@@ -4,7 +4,7 @@ import Qt5Compat.GraphicalEffects
 
 Item {
     id: root
-    property string text
+    property string text: "Путь не задан"
     width: 20
     function animStart()
     {
