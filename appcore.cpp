@@ -220,15 +220,6 @@ void Appcore::test(QString xmlFilePath, QString xslFilePath, QString targetPath)
     {
         xslt_processor::setcwd("");
         QString processedXML_str = xslt_processor::processXSLT(xmlFilePath, xslFilePath);
-
-        QFile temp("temp.xml");
-        if (temp.open(QIODevice::WriteOnly))
-        {
-            QTextStream writeStream(&temp);
-            writeStream << processedXML_str;
-            temp.close();
-        }
-
         QString filePath = targetPath + "/" + QFileInfo(xmlFilePath).completeBaseName();
         xml_parser::setXML(processedXML_str);
         QString featureType = xml_parser::readFeatureType();

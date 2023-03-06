@@ -14,10 +14,7 @@ QString xslt_processor::processXSLT(QString xmlPath, QString xsltPath)
     params << xmlInfo.absoluteFilePath() << xsltInfo.absoluteFilePath();
     p.start(program, params);
     p.waitForFinished();
-    qDebug(logDebug()) << p.exitCode();
     QString output(p.readAllStandardOutput());
-    qDebug(logDebug()) << output;
-    qDebug(logDebug()) << p.readAllStandardError();
     return output;
 }
 
