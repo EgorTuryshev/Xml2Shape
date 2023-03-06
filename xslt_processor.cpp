@@ -10,8 +10,8 @@ QString xslt_processor::processXSLT(QString xmlPath, QString xsltPath)
     QStringList params;
     QFileInfo xmlInfo (xslt_processor::cwd + xmlPath); // ?
     QFileInfo xsltInfo (xslt_processor::cwd + xsltPath); // ?
-    //QString program = "../Xml2Shape/xslt_processor_app/xslt_processor.exe"; // TO-DO: перед релизом изменить путь
-    QString program = "./xslt_processor_app/xslt_processor.exe";
+    QString program = "../Xml2Shape/xslt_processor_app/xslt_processor.exe"; // TO-DO: перед релизом изменить путь
+    //QString program = "./xslt_processor_app/xslt_processor.exe";
     //QString program = "../xslt_processor_new_app/xslt_processor.exe";
     params << xmlInfo.absoluteFilePath() << xsltInfo.absoluteFilePath();
     p.start(program, params);
@@ -47,8 +47,8 @@ QString xslt_processor::processXSLT_data(QString xmlFileName, QString xmlData, Q
     QProcess p;
     QStringList params;
     QFileInfo xsltInfo (xslt_processor::cwd + xsltPath); // ?
-    //QString program = "../xslt_processor_data_app/xslt_processor_data.exe"; // TO-DO: перед релизом изменить путь
-    QString program = "./xslt_processor_data_app/xslt_processor_data.exe";
+    QString program = "../xslt_processor_data_app/xslt_processor_data.exe"; // TO-DO: перед релизом изменить путь
+    //QString program = "./xslt_processor_data_app/xslt_processor_data.exe";
     params << xmlFileName << xsltInfo.absoluteFilePath();
     p.start(program, params);
     p.waitForFinished();
