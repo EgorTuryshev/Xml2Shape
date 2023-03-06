@@ -1,5 +1,4 @@
 #include <QtGui/private/qzipreader_p.h>
-#include <QtConcurrent>
 #include "appcore.h"
 #include "xslt_processor.h"
 #include "fs_property_manager.h"
