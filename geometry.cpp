@@ -76,10 +76,9 @@ void Geometry::StartSubpart()
 {
     if (nParts > 0)
     {
-        // TO-DO: Исправить
-        if(Xs[IteratorsOfVerts.last()] != Xs.last() || Ys[IteratorsOfVerts.last()] != Ys.last())
+        if(Xs[IteratorsOfVerts.last() - 1] != Xs.last() || Ys[IteratorsOfVerts.last() - 1] != Ys.last())
         {
-            PointPush(Xs[IteratorsOfVerts.last()], Ys[IteratorsOfVerts.last()]);
+            PointPush(Xs[IteratorsOfVerts.last() - 1], Ys[IteratorsOfVerts.last() - 1]);
         }
         SmartReverse();
     }

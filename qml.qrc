@@ -8,5 +8,7 @@
     </qresource>
     <qresource prefix="/">
         <file>folder.svg</file>
+        <file>file.svg</file>
+        <file>files.svg</file>
     </qresource>
 </RCC>

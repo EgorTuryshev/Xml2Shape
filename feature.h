@@ -7,34 +7,34 @@
 struct Attribute
 {
 private:
-    QString name;
-    QString value;
+    QString _name;
+    QString _value;
 public:
     Attribute(QString name, QString value)
     {
-        this->name = name;
-        this->value = value;
+        this->_name = name;
+        this->_value = value;
     }
     Attribute()
     {
-        this->name = "";
-        this->value = "";
+        this->_name = "";
+        this->_value = "";
     }
     void setName(QString name)
     {
-        this->name = name;
+        this->_name = name;
     }
     void setValue(QString value)
     {
-        this->value = value;
+        this->_value = value;
     }
     QString getName()
     {
-        return this->name;
+        return this->_name;
     }
     QString getValue()
     {
-        return this->value;
+        return this->_value;
     }
 };
 
