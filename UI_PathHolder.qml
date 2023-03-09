@@ -5,6 +5,7 @@ import Qt5Compat.GraphicalEffects
 Item {
     id: root
     property string text: "Путь не задан"
+    property int maxwidth: 400
     width: 20
     function animStart()
     {
@@ -15,18 +16,18 @@ Item {
         slideOutanim.start();
     }
 
-    Timer
-    {
-        id: timer
-    }
+//    Timer
+//    {
+//        id: timer
+//    }
 
-    function delay(delayTime, cb)
-    {
-        timer.interval = delayTime;
-        timer.repeat = false;
-        timer.triggered.connect(cb);
-        timer.start();
-    }
+//    function delay(delayTime, cb)
+//    {
+//        timer.interval = delayTime;
+//        timer.repeat = false;
+//        timer.triggered.connect(cb);
+//        timer.start();
+//    }
 
     //property full_width width: text.length * 9 + folderIcon.width
     property color color: !enabled? "lightgrey" : Material.accent
@@ -62,10 +63,11 @@ Item {
                 }
                 onExited:
                 {
-                    delay(1000, function()
+                    /*delay(1000, function()
                     {
                         root.animEnd()
-                    });
+                    });*/
+                    root.animEnd()
                 }
             }
         }
@@ -108,13 +110,18 @@ Item {
                 target: borderRect
                 property: "width"
                 duration: 400
-                to: root.text.length * 9 + folderIcon.width
+                to: root.text.length * 9 + folderIcon.width > root.maxwidth ? root.maxwidth : root.text.length * 9 + folderIcon.width
                 easing.type: Easing.InOutQuad
             }
         }
-        ParallelAnimation
+        SequentialAnimation
         {
             id: slideOutanim
+
+            PauseAnimation
+            {
+                duration: 1000
+            }
             NumberAnimation
             {
                 target: borderRect

@@ -23,7 +23,7 @@ ApplicationWindow
         }
     }
 
-    property int accent: Material.Teal
+    property int accent: Material.Green
     property bool isRightMenuActive: true;
 
     width: 1000
@@ -41,7 +41,7 @@ ApplicationWindow
         property alias width: window.width
         property alias height: window.height
         property alias accent: window.accent
-        property alias i: themeSwitch.i
+        //property alias i: themeSwitch.i
         property alias isAutoClear: autoClear.checked
         property alias autoDirtyFix: autoDirtyFix.checked
         property alias invertXY: invertXY.checked
@@ -404,6 +404,7 @@ ApplicationWindow
                 anchors.leftMargin: 5
                 height: selectXMLMark.height
                 enabled: false
+                maxwidth: rightBorder.width - x + selectXMLMark.height * 2
             }
 
             UI_Button
@@ -476,6 +477,7 @@ ApplicationWindow
                 anchors.top: selectXMLMark.top
                 anchors.leftMargin: 5
                 height: selectXMLMark.height
+                maxwidth: rightBorder.width - x + selectXMLMark.height * 2
             }
 
             /*UI_Button
@@ -574,12 +576,12 @@ ApplicationWindow
         font.pixelSize: 14
         contentWidth: parent.width
 
-        Menu
+        /*Menu
         {
             id: headmenu
             title: "ГБУ \"ТФИ РК\""
-        }
-        Menu
+        }*/
+        /*Menu
         {
             title: "Файл"
 
@@ -610,7 +612,7 @@ ApplicationWindow
                     window.close();
                 }
             }
-        }
+        }*/
         Menu
         {
             title: "Лог"
