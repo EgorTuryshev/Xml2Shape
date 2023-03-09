@@ -1,0 +1,56 @@
+QFileInfo xmlFileInfo(xmlFilePath);
+    if (xmlFileInfo.suffix() == "zip")
+    {
+        //QZipReader zip_reader(xmlFilePath);
+        //if (zip_reader.exists())
+        //{
+            // Ниже представлен медленный способ
+            /*foreach (QZipReader::FileInfo info, zip_reader.fileInfoList())
+            {
+                if (info.isFile) // CHECK: Нужна ли эта проверка?
+                {
+                    QFileInfo currFileInfo(info.filePath);
+                    // CHECK: Нужно ли вообще проверять каждый файл по отдельности, или лучше сразу использовать метод
+                    // .extractAll()?
+                    if (currFileInfo.suffix() == "xml")
+                    {
+                        QByteArray fileData = zip_reader.fileData(info.filePath); // ?
+                        qDebug() << "Считаны данные файла";
+                        QString fileDataStr(fileData);
+                        qDebug() << "Данные файла переведены в строку";
+                        QFile tempFile("./temp/" + currFileInfo.fileName()); // ?
+
+                        if (tempFile.open(QIODevice::WriteOnly | QIODevice::Text))
+                        {
+                            QTextStream writeStream(&tempFile);
+                            writeStream << fileDataStr; // CHECK: Можно ли сразу записывать QByteArray?
+                        }
+                        tempFile.close();
+                        qDebug() << "Данные файла записаны во временный файл";
+
+                        QFileInfo tempFileInfo(tempFile);
+                        this->test(tempFileInfo.absoluteFilePath(), xslFilePath, targetPath);
+
+                        tempFile.remove();
+                        qDebug() << "Временный файл удален";
+                    }
+                }
+            }*/
+
+            // Это тоже медленный способ (узким местом является удаление временных файлов)
+            /*zip_reader.extractAll("./temp");
+            QDir tempDir("./temp");
+            tempDir.setFilter(QDir::Files);
+            QFileInfoList files(tempDir.entryInfoList());
+            foreach (QFileInfo fileInfo, files)
+            {
+                if (fileInfo.suffix() == "xml")
+                {
+                    this->test(fileInfo.absoluteFilePath(), xslFilePath, targetPath);
+                }
+
+                QFile::remove(fileInfo.absoluteFilePath());
+                //std::filesystem::remove(fileInfo.absoluteFilePath().toStdString());
+            }*/
+
+            /*foreach (QZipReader::FileInfo info, zip_reader.fileInfoList())

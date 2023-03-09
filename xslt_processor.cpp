@@ -10,10 +10,12 @@ QString xslt_processor::processXSLT(QString xmlPath, QString xsltPath)
     QStringList params;
     QFileInfo xmlInfo (xslt_processor::cwd + xmlPath); // ?
     QFileInfo xsltInfo (xslt_processor::cwd + xsltPath); // ?
-    QString program = "../Xml2Shape/xslt_processor_app/xslt_processor.exe"; // TO-DO: перед релизом изменить путь
+    QString program = "../Xml2Shape/xslt_processor_zip_app/xslt_processor_zip.exe"; // TO-DO: перед релизом изменить путь
     params << xmlInfo.absoluteFilePath() << xsltInfo.absoluteFilePath();
+    qDebug(logDebug()) << params;
     p.start(program, params);
     p.waitForFinished();
+    qDebug(logDebug()) << p.exitCode();
     QString output(p.readAllStandardOutput());
     return output;
 }
