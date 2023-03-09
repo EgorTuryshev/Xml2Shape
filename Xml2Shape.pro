@@ -16,7 +16,6 @@ HEADERS += \
     loggingcategories.h \
     model_generator.h \
     shapelib/shapefil.h \
-    tester.h \
     xml_parser.h \
     xslt_processor.h \
 
@@ -35,7 +34,6 @@ SOURCES += \
     shapelib/safileio.c \
     shapelib/shpopen.c  \
     shapelib/dbfopen.c \
-    tester.cpp \
     xml_parser.cpp \
     xslt_processor.cpp \
 

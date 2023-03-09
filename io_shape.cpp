@@ -59,12 +59,68 @@ QString getUniqueFilePath(QString filePath, int i = 1) // CHECK: Я не уве�
     }
 }
 
+QString translit(const QString str)
+{
+    QString out = "";
+    QMap<QChar, QString> map;
+    map[L'а'] = "a";
+    map[L'б'] = "b";
+    map[L'в'] = "v";
+    map[L'г'] = "g";
+    map[L'д'] = "d";
+    map[L'е'] = "e";
+    map[L'ё'] = "io";
+    map[L'ж'] = "zh";
+    map[L'з'] = "z";
+    map[L'и'] = "i";
+    map[L'й'] = "y";
+    map[L'к'] = "k";
+    map[L'л'] = "l";
+    map[L'м'] = "m";
+    map[L'н'] = "n";
+    map[L'о'] = "o";
+    map[L'п'] = "p";
+    map[L'р'] = "r";
+    map[L'с'] = "s";
+    map[L'т'] = "t";
+    map[L'у'] = "u";
+    map[L'ф'] = "f";
+    map[L'х'] = "h";
+    map[L'ц'] = "c";
+    map[L'ч'] = "ch";
+    map[L'ш'] = "sh";
+    map[L'щ'] = "sch";
+    map[L'ъ'] = "";
+    map[L'ы'] = "y";
+    map[L'ь'] = "";
+    map[L'э'] = "e";
+    map[L'ю'] = "yu";
+    map[L'я'] = "ya";
+
+    for (int i = 0; i < str.size(); i++)
+    {
+        QString newChar = "";
+        QString mapValue = map.value(str[i]);
+        if (mapValue != "")
+        {
+            newChar = mapValue;
+        }
+        else
+        {
+            newChar = str[i];
+        }
+
+        out += newChar;
+    }
+
+    return out;
+}
+
 IO_Shape::IO_Shape(){}
 
 void IO_Shape::WriteShape()
 {
     Geometry::SetShapeFile("test_poligons");
-
 }
 
 void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath, bool isInvertXY, bool isAutoDirtyFix)
@@ -76,9 +132,14 @@ void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Featur
     Geometry::SetShapeFile(filePathC);
     short int type = 0;
 
-    if (featureType == "MultiPolygon") // TO-DO: Добавить другие типы
+    if (featureType == "MultiPolygon")
     {
         type = SHPT_POLYGON;
+    }
+    else
+    {
+        qDebug(logDebug()) << "Некорректный тип объекта!";
+        return;
     }
 
     for (int i = 0; i < features.count(); i++)
