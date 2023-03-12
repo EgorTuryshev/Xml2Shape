@@ -11,6 +11,7 @@ ApplicationWindow
 {
     id: window
 
+    font.family: "Calibri"
     Connections
     {
         target: appcore
@@ -23,11 +24,13 @@ ApplicationWindow
         }
     }
 
-    property int accent: Material.Teal
+    property int accent: Material.Green
     property bool isRightMenuActive: true;
 
     width: 1000
     height: 600
+    minimumWidth: 800
+    minimumHeight: 600
     visible: true
     title: qsTr("Xml2Shape")
     Material.theme: Material.Light
@@ -40,12 +43,10 @@ ApplicationWindow
         property alias y: window.y
         property alias width: window.width
         property alias height: window.height
-        property alias accent: window.accent
-        property alias i: themeSwitch.i
         property alias isAutoClear: autoClear.checked
         property alias autoDirtyFix: autoDirtyFix.checked
         property alias invertXY: invertXY.checked
-        property alias isRightMenuActive: window.isRightMenuActive
+        //property alias isRightMenuActive: window.isRightMenuActive
     }
 
     Timer
@@ -205,7 +206,7 @@ ApplicationWindow
                 anchors.topMargin: leftBorder.height / 2 - height / 2
                 onClicked:
                 {
-                    if(isRightMenuActive)
+                    if(window.isRightMenuActive)
                     {
                         rightSlideOutAnimation.start();
                         leftSlideInAnimation.start();
@@ -215,7 +216,7 @@ ApplicationWindow
                         leftSlideOutAnimation.start();
                         rightSlideInAnimation.start();
                     }
-                    isRightMenuActive = !isRightMenuActive;
+                    window.isRightMenuActive = !window.isRightMenuActive;
                 }
             }
 
@@ -337,7 +338,7 @@ ApplicationWindow
                 anchors.topMargin: rightBorder.height / 2 - height / 2
                 onClicked:
                 {
-                    if(isRightMenuActive)
+                    if(window.isRightMenuActive)
                     {
                         rightSlideOutAnimation.start();
                         leftSlideInAnimation.start();
@@ -347,7 +348,7 @@ ApplicationWindow
                         leftSlideOutAnimation.start();
                         rightSlideInAnimation.start();
                     }
-                    isRightMenuActive = !isRightMenuActive;
+                    window.isRightMenuActive = !window.isRightMenuActive;
                 }
             }
 
@@ -404,6 +405,8 @@ ApplicationWindow
                 anchors.leftMargin: 5
                 height: selectXMLMark.height
                 enabled: false
+                maxwidth: rightBorder.width - x + selectXMLMark.height * 2
+                imgSource: "qrc:/folder.svg"
             }
 
             UI_Button
@@ -476,31 +479,9 @@ ApplicationWindow
                 anchors.top: selectXMLMark.top
                 anchors.leftMargin: 5
                 height: selectXMLMark.height
+                maxwidth: rightBorder.width - x + selectXMLMark.height * 2
+                imgSource: "qrc:/files.svg"
             }
-
-            /*UI_Button
-            {
-                id: animTest
-                anchors.bottom: selectXMLBtn.top
-                anchors.left: selectXMLBtn.left
-                anchors.bottomMargin: 0
-                text: "ТЕСТ АНИМАЦИИ"
-                onClicked:
-                {
-                    cItem.switchState();
-                }
-            }*/
-
-            /*UI_CheckItem
-            {
-                id: cItem
-                width: animTest.height - 10
-                height: animTest.height - 10
-                anchors.bottom: animTest.bottom
-                anchors.left: animTest.right
-                anchors.leftMargin: 5
-                anchors.bottomMargin: 5
-            }*/
 
             FileDialog {
                 id: xmlFileDialog
@@ -573,44 +554,6 @@ ApplicationWindow
         Material.foreground: Material.accentColor.lighter(3)
         font.pixelSize: 14
         contentWidth: parent.width
-
-        Menu
-        {
-            id: headmenu
-            title: "ГБУ \"ТФИ РК\""
-        }
-        Menu
-        {
-            title: "Файл"
-
-            MenuBarItem
-            {
-                id: themeSwitch
-                property var accents: [Material.Teal, Material.Green, Material.Indigo, Material.Cyan, Material.DeepOrange, Material.Grey, Material.BlueGrey];
-                property int i: 0;
-                text: "Сменить тему"
-                onClicked:
-                {
-                    if (i < accents.length - 1)
-                    {
-                        i++;
-                    }
-                    else
-                    {
-                        i = 0;
-                    }
-                    window.accent = accents[i];
-                }
-            }
-            MenuSeparator { }
-            MenuBarItem
-            {
-                text: "Закрыть"
-                onClicked: {
-                    window.close();
-                }
-            }
-        }
         Menu
         {
             title: "Лог"
