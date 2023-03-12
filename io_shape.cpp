@@ -1,18 +1,19 @@
-#include "io_shape.h"
-#include <stdlib.h>
-#include <iostream>
+#include <QApplication>
 #include <QDebug>
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QTextStream>
 #include <QDebug>
 #include <QtXml>
-#include <geometry.h>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QString>
-#include <fs_category.h>
-#include <fs_property_manager.h>
+#include <iostream>
+#include <stdlib.h>
+#include "geometry.h"
+#include "io_shape.h"
+#include "fs_category.h"
+#include "fs_property_manager.h"
 
 using namespace std;
 
@@ -28,10 +29,8 @@ QString getUniqueFilePath(QString filePath, int i = 1) // CHECK: Я не уве�
         QFileInfo currFileInfo(it.next());
         if (currFileInfo.isDir()) continue;
 
-        //qDebug() << "Текущий файл: " << currFileInfo.fileName();
         if (i == 1)
         {
-            //qDebug() << fileInfo.fileName() + " == " + QFileInfo(currFileInfo.fileName()).completeBaseName();
             if (fileInfo.fileName() == QFileInfo(currFileInfo.fileName()).completeBaseName())
             {
                 isUnique = false;
@@ -40,7 +39,6 @@ QString getUniqueFilePath(QString filePath, int i = 1) // CHECK: Я не уве�
         }
         else
         {
-            //qDebug() << fileInfo.fileName() + "_" + QString::number(i) + " == " + QFileInfo(currFileInfo.fileName()).completeBaseName();
             if (fileInfo.fileName() + "_" + QString::number(i) == QFileInfo(currFileInfo.fileName()).completeBaseName())
             {
                 isUnique = false;
@@ -59,61 +57,36 @@ QString getUniqueFilePath(QString filePath, int i = 1) // CHECK: Я не уве�
     }
 }
 
-QString translit(const QString str)
+QString translit(const QString str) // TO-DO: Можно оптимизировать
 {
-    QString out = "";
-    QMap<QChar, QString> map;
-    map[L'а'] = "a";
-    map[L'б'] = "b";
-    map[L'в'] = "v";
-    map[L'г'] = "g";
-    map[L'д'] = "d";
-    map[L'е'] = "e";
-    map[L'ё'] = "io";
-    map[L'ж'] = "zh";
-    map[L'з'] = "z";
-    map[L'и'] = "i";
-    map[L'й'] = "y";
-    map[L'к'] = "k";
-    map[L'л'] = "l";
-    map[L'м'] = "m";
-    map[L'н'] = "n";
-    map[L'о'] = "o";
-    map[L'п'] = "p";
-    map[L'р'] = "r";
-    map[L'с'] = "s";
-    map[L'т'] = "t";
-    map[L'у'] = "u";
-    map[L'ф'] = "f";
-    map[L'х'] = "h";
-    map[L'ц'] = "c";
-    map[L'ч'] = "ch";
-    map[L'ш'] = "sh";
-    map[L'щ'] = "sch";
-    map[L'ъ'] = "";
-    map[L'ы'] = "y";
-    map[L'ь'] = "";
-    map[L'э'] = "e";
-    map[L'ю'] = "yu";
-    map[L'я'] = "ya";
+    QString fn;
+    int i, rU, rL;
+    QString rusUpper = QString::fromUtf8("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ");
+    QString rusLower = QString::fromUtf8("абвгдеёжзийклмнопрстуфхцчшщъыьэюя");
+    QStringList latUpper, latLower;
+    latUpper <<"A"<<"B"<<"V"<<"G"<<"D"<<"E"<<"YE"<<"ZH"<<"Z"<<"I"<<"Y"<<"K"<<"L"<<"M"<<"N"
+            <<"O"<<"P"<<"R"<<"S"<<"T"<<"U"<<"F"<<"KH"<<"TS"<<"CH"<<"SH"<<"SHCH"<<""<<"Y"<<""<<"E"<<"YU"<<"YA";
+    latLower <<"a"<<"b"<<"v"<<"g"<<"d"<<"e"<<"ye"<<"zh"<<"z"<<"i"<<"y"<<"k"<<"l"<<"m"<<"n"
+            <<"o"<<"p"<<"r"<<"s"<<"t"<<"u"<<"f"<<"kh"<<"ts"<<"ch"<<"sh"<<"shch"<<""<<"y"<<""<<"e"<<"yu"<<"ya";
 
-    for (int i = 0; i < str.size(); i++)
+    for (i = 0; i < str.size(); ++i)
     {
-        QString newChar = "";
-        QString mapValue = map.value(str[i]);
-        if (mapValue != "")
+        rU = rusUpper.indexOf(str[i]);
+        if (rU >= 0)
         {
-            newChar = mapValue;
+            fn += latUpper[rU];
+            continue;
         }
+
+        rL = rusLower.indexOf(str[i]);
+        if (rL >= 0) fn += latLower[rL];
         else
         {
-            newChar = str[i];
+            fn += str[i];
         }
-
-        out += newChar;
     }
 
-    return out;
+    return fn;
 }
 
 IO_Shape::IO_Shape(){}
@@ -126,7 +99,7 @@ void IO_Shape::WriteShape()
 void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath, bool isInvertXY, bool isAutoDirtyFix)
 {
     Geometry::SetSmartReverse(isAutoDirtyFix); // TO-DO: Привязать к чек-боксу
-    QString uniqueFilePath = getUniqueFilePath(filePath);
+    QString uniqueFilePath = translit(getUniqueFilePath(filePath));
     char *filePathC = (char*)malloc(uniqueFilePath.length() + 1);
     strcpy(filePathC, uniqueFilePath.toStdString().c_str()); // TO-DO: Можно в будущем изменить на более безопасную функцию
     Geometry::SetShapeFile(filePathC);
