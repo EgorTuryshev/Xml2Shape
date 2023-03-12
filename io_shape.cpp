@@ -1,18 +1,19 @@
-#include "io_shape.h"
-#include <stdlib.h>
-#include <iostream>
+#include <QApplication>
 #include <QDebug>
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QTextStream>
 #include <QDebug>
 #include <QtXml>
-#include <geometry.h>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QString>
-#include <fs_category.h>
-#include <fs_property_manager.h>
+#include <iostream>
+#include <stdlib.h>
+#include "geometry.h"
+#include "io_shape.h"
+#include "fs_category.h"
+#include "fs_property_manager.h"
 
 using namespace std;
 
@@ -28,10 +29,8 @@ QString getUniqueFilePath(QString filePath, int i = 1) // CHECK: Я не уве�
         QFileInfo currFileInfo(it.next());
         if (currFileInfo.isDir()) continue;
 
-        //qDebug() << "Текущий файл: " << currFileInfo.fileName();
         if (i == 1)
         {
-            //qDebug() << fileInfo.fileName() + " == " + QFileInfo(currFileInfo.fileName()).completeBaseName();
             if (fileInfo.fileName() == QFileInfo(currFileInfo.fileName()).completeBaseName())
             {
                 isUnique = false;
@@ -40,7 +39,6 @@ QString getUniqueFilePath(QString filePath, int i = 1) // CHECK: Я не уве�
         }
         else
         {
-            //qDebug() << fileInfo.fileName() + "_" + QString::number(i) + " == " + QFileInfo(currFileInfo.fileName()).completeBaseName();
             if (fileInfo.fileName() + "_" + QString::number(i) == QFileInfo(currFileInfo.fileName()).completeBaseName())
             {
                 isUnique = false;
@@ -59,26 +57,62 @@ QString getUniqueFilePath(QString filePath, int i = 1) // CHECK: Я не уве�
     }
 }
 
+QString translit(const QString str) // TO-DO: Можно оптимизировать
+{
+    QString fn;
+    int i, rU, rL;
+    QString rusUpper = QString::fromUtf8("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ");
+    QString rusLower = QString::fromUtf8("абвгдеёжзийклмнопрстуфхцчшщъыьэюя");
+    QStringList latUpper, latLower;
+    latUpper <<"A"<<"B"<<"V"<<"G"<<"D"<<"E"<<"YE"<<"ZH"<<"Z"<<"I"<<"Y"<<"K"<<"L"<<"M"<<"N"
+            <<"O"<<"P"<<"R"<<"S"<<"T"<<"U"<<"F"<<"KH"<<"TS"<<"CH"<<"SH"<<"SHCH"<<""<<"Y"<<""<<"E"<<"YU"<<"YA";
+    latLower <<"a"<<"b"<<"v"<<"g"<<"d"<<"e"<<"ye"<<"zh"<<"z"<<"i"<<"y"<<"k"<<"l"<<"m"<<"n"
+            <<"o"<<"p"<<"r"<<"s"<<"t"<<"u"<<"f"<<"kh"<<"ts"<<"ch"<<"sh"<<"shch"<<""<<"y"<<""<<"e"<<"yu"<<"ya";
+
+    for (i = 0; i < str.size(); ++i)
+    {
+        rU = rusUpper.indexOf(str[i]);
+        if (rU >= 0)
+        {
+            fn += latUpper[rU];
+            continue;
+        }
+
+        rL = rusLower.indexOf(str[i]);
+        if (rL >= 0) fn += latLower[rL];
+        else
+        {
+            fn += str[i];
+        }
+    }
+
+    return fn;
+}
+
 IO_Shape::IO_Shape(){}
 
 void IO_Shape::WriteShape()
 {
     Geometry::SetShapeFile("test_poligons");
-
 }
 
 void IO_Shape::WriteShape(QString featureType, xml_header header, QVector<Feature> features, QString filePath, bool isInvertXY, bool isAutoDirtyFix)
 {
     Geometry::SetSmartReverse(isAutoDirtyFix); // TO-DO: Привязать к чек-боксу
-    QString uniqueFilePath = getUniqueFilePath(filePath);
+    QString uniqueFilePath = translit(getUniqueFilePath(filePath));
     char *filePathC = (char*)malloc(uniqueFilePath.length() + 1);
     strcpy(filePathC, uniqueFilePath.toStdString().c_str()); // TO-DO: Можно в будущем изменить на более безопасную функцию
     Geometry::SetShapeFile(filePathC);
     short int type = 0;
 
-    if (featureType == "MultiPolygon") // TO-DO: Добавить другие типы
+    if (featureType == "MultiPolygon")
     {
         type = SHPT_POLYGON;
+    }
+    else
+    {
+        qDebug(logDebug()) << "Некорректный тип объекта!";
+        return;
     }
 
     for (int i = 0; i < features.count(); i++)

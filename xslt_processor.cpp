@@ -7,48 +7,29 @@ QString xslt_processor::cwd = "";
 QString xslt_processor::processXSLT(QString xmlPath, QString xsltPath)
 {
     QProcess p;
-    QStringList params;
-    QFileInfo xmlInfo (xslt_processor::cwd + xmlPath); // ?
-    QFileInfo xsltInfo (xslt_processor::cwd + xsltPath); // ?
-    QString program = "../Xml2Shape/xslt_processor_app/xslt_processor.exe"; // TO-DO: перед релизом изменить путь
-    params << xmlInfo.absoluteFilePath() << xsltInfo.absoluteFilePath();
-    p.start(program, params);
-    p.waitForFinished();
-    QString output(p.readAllStandardOutput());
-    return output;
-}
 
-QString xslt_processor::processXSLT_data(QString xmlFileName, QString xmlData, QString xsltPath)
-{
-    QSharedMemory mem;
-    mem.setKey("xmlData");
-    QByteArray xmlDataBytes = xmlData.toUtf8();
-    if (!mem.create(xmlDataBytes.size())) // Занимаем память
+    QSharedMemory xml_mem;
+    xml_mem.setKey("xmlPath");
+    if (!xml_mem.create(xmlPath.toUtf8().size()))
     {
-        qDebug(logDebug()) << "Не удалось выделить общую память для процесса!";
         return "";
     }
-    char *data = (char*)mem.data(); // Указатель на общую память
-    memcpy(data, xmlDataBytes.data(), strlen(xmlDataBytes.data() + 1)); // +1?
-    mem.unlock(); // Заканчиваем работу с общей памятью
+    char *xml_memDataPointer = (char*)xml_mem.data();
+    memcpy(xml_memDataPointer, xmlPath.toUtf8().data(), strlen(xmlPath.toUtf8().data()));
+    xml_mem.unlock();
 
-    // Более медленный способ
-    /*if (mem.lock())
+    QSharedMemory xslt_mem;
+    xslt_mem.setKey("xsltPath");
+    if (!xslt_mem.create(xmlPath.toUtf8().size()))
     {
-        for (int i = 0; i < xmlDataBytes.size(); i++)
-        {
-            data[i] = xmlDataBytes[i];
-        }
-        mem.unlock();
-    }*/
+        return "";
+    }
+    char *xslt_memDataPointer = (char*)xslt_mem.data();
+    memcpy(xslt_memDataPointer, xsltPath.toUtf8().data(), strlen(xsltPath.toUtf8().data()));
+    xslt_mem.unlock();
 
-    QProcess p;
-    QStringList params;
-    QFileInfo xsltInfo (xslt_processor::cwd + xsltPath); // ?
-    QString program = "../xslt_processor_data_app/xslt_processor_data.exe"; // TO-DO: перед релизом изменить путь
-    //QString program = "./xslt_processor_data_app/xslt_processor_data.exe";
-    params << xmlFileName << xsltInfo.absoluteFilePath();
-    p.start(program, params);
+    QString program = "../Xml2Shape/xslt_processor_zip_app/xslt_processor_zip.exe"; // TO-DO: перед релизом изменить путь
+    p.start(program);
     p.waitForFinished();
     QString output(p.readAllStandardOutput());
     return output;
